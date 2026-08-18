@@ -77,14 +77,14 @@ export function HeroSection() {
             className="mt-4 flex items-center gap-4"
           >
             <Button 
-              size="lg" 
-              className="rounded-full px-8 text-[15px]"
+              variant="ghost"
+              className="text-[#101b4d] hover:bg-transparent hover:text-[#e6127d] text-[16px] font-semibold px-2 transition-colors"
               onClick={() => {
                 window.location.href = "/products";
               }}
             >
               Order Now
-              <ArrowRight className="ml-1 size-4.5" />
+              <ArrowRight className="ml-2 size-5 transition-transform group-hover/button:translate-x-1" />
             </Button>
           </motion.div>
         </motion.div>
