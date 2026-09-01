@@ -1,0 +1,26 @@
+Order ID,Date,Customer Name,Customer Email,Phone,Address,City,Total Amount,Payment Status,Order Status,Items Count
+6a86d0de79520c7ded3ced68,"8/20/2026, 3:33:10 PM","Arunajyothi Boddu","a@gmail.com","7036592351","wipro, Sc colony","Singarayakonda",3837.5,completed,processing,5
+6a86cd1679520c7ded3ced43,"8/20/2026, 3:17:02 PM","Arunajyothi Boddu","a@gmail.com","7036592351","wipro, Sc colony","Singarayakonda",337.62,pending,delivered,1
+6a86ccbd79520c7ded3ced3e,"8/20/2026, 3:15:33 PM","Arunajyothi Boddu","a@gmail.com","7036592351","wipro, Sc colony","Singarayakonda",337.62,pending,delivered,1
+6a86cca579520c7ded3ced39,"8/20/2026, 3:15:09 PM","Arunajyothi Boddu","a@gmail.com","7036592351","wipro, Sc colony","Singarayakonda",384.82,pending,delivered,1
+6a86cc6179520c7ded3ced34,"8/20/2026, 3:14:01 PM","Arunajyothi Boddu","a@gmail.com","7036592351","wipro, Sc colony","Singarayakonda",12412.56,refunded,cancelled,8
+6a86c8ba79520c7ded3ced17,"8/20/2026, 2:58:26 PM","Arunajyothi Boddu","a@gmail.com","7036592351","wipro, Sc colony","Singarayakonda",558.28,pending,processing,4
+6a86b1f979520c7ded3cecf9,"8/20/2026, 1:21:21 PM","Arunajyothi Boddu","a@gmail.com","7036592351","wipro, Sc colony","Singarayakonda",3215.64,pending,processing,2
+6a869e8079520c7ded3cecf8,"8/20/2026, 11:58:16 AM","John Doe","arunajyothiboddu123@gmail.com","1234567890","G-30 & 31, Aparna Neo Mall","Hyderabad",3215.64,completed,delivered,2
+6a869e0a79520c7ded3cecf7,"8/20/2026, 11:56:18 AM","John Doe","arunajyothiboddu123@gmail.com","1234567890","G-30 & 31, Aparna Neo Mall","Hyderabad",3215.64,pending,processing,2
+6a86996c79520c7ded3cecf6,"8/20/2026, 11:36:36 AM","John Doe","arunajyothiboddu123@gmail.com","1234567890","G-30 & 31, Aparna Neo Mall","Hyderabad",502.82,completed,processing,1
+6a8693eb79520c7ded3cecf5,"8/20/2026, 11:13:07 AM","John Doe","arunajyothiboddu123@gmail.com","1234567890","G-30 & 31, Aparna Neo Mall","Hyderabad",2035.6399999999999,completed,processing,2
+6a85916aba5d3f3396d426f7,"8/19/2026, 4:50:10 PM","John Doe","arunajyothiboddu123@gmail.com","1234567890","G-30 & 31, Aparna Neo Mall","Hyderabad",219.62,completed,delivered,1
+6a858967ba5d3f3396d426f5,"8/19/2026, 4:15:59 PM","John Doe","arunajyothiboddu123@gmail.com","1234567890","G-30 & 31, Aparna Neo Mall","Hyderabad",4748.46,completed,cancelled,3
+6a8570eb82a4bc7f3ef22980,"8/19/2026, 2:31:31 PM","John Doe","arunajyothiboddu123@gmail.com","1234567890","G-30 & 31, Aparna Neo Mall","Hyderabad",502.82,refunded,cancelled,1
+6a85706982a4bc7f3ef2297e,"8/19/2026, 2:29:21 PM","John Doe","arunajyothiboddu123@gmail.com","1234567890","G-30 & 31, Aparna Neo Mall","Hyderabad",1208.46,refunded,cancelled,3
+6a8550b382a4bc7f3ef22949,"8/19/2026, 12:14:03 PM","John Doe","arunajyothiboddu123@gmail.com","1234567890","G-30 & 31, Aparna Neo Mall","Hyderabad",3568.46,refunded,cancelled,3
+6a843fb0edac65ebadaa4c44,"8/18/2026, 4:49:12 PM","John Doe","arunajyothiboddu123@gmail.com","1234567890","G-30 & 31, Aparna Neo Mall","Hyderabad",2388.46,completed,shipped,3
+6a84289f5940cdd077eea242,"8/18/2026, 3:10:47 PM","John Doe","arunajyothiboddu123@gmail.com","1234567890","G-30 & 31, Aparna Neo Mall","Hyderabad",3094.1,completed,cancelled,5
+6a8428095940cdd077eea240,"8/18/2026, 3:08:17 PM","John Doe","arunajyothiboddu123@gmail.com","1234567890","G-30 & 31, Aparna Neo Mall","Hyderabad",706.96,completed,shipped,8
+6a8303b593e1763c1c33787e,"8/17/2026, 6:21:01 PM","John Doe","arunajyothiboddu123@gmail.com","1234567890","G-30 & 31, Aparna Neo Mall","Hyderabad",855.64,completed,shipped,2
+6a82dc8793e1763c1c33787c,"8/17/2026, 3:33:51 PM","John Doe","suprajathatipmula@gmail.com","1234567890","G-30 & 31, Aparna Neo Mall","Hyderabad",2146.56,completed,shipped,8
+6a82ce8e93e1763c1c337875,"8/17/2026, 2:34:14 PM","John Doe","arunajyothiboddu123@gmail.com","1234567890","G-30 & 31, Aparna Neo Mall","Hyderabad",3288.8,completed,pending,20
+6a82cc967ff5c7b1758b6cae,"8/17/2026, 2:25:50 PM","John Doe","john@example.com","1234567890","G-30 & 31, Aparna Neo Mall","Hyderabad",2388.46,completed,shipped,3
+6a82c7cc7ff5c7b1758b6cad,"8/17/2026, 2:05:24 PM","John Doe","john@example.com","1234567890","G-30 & 31, Aparna Neo Mall","Hyderabad",2388.46,refunded,cancelled,3
+6a82b7ac7ff5c7b1758b6cac,"8/17/2026, 12:56:36 PM","John Doe","john@example.com","1234567890","G-30 & 31, Aparna Neo Mall","Hyderabad",358.86,refunded,cancelled,3
