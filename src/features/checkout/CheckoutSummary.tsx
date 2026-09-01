@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 
 import Image from "next/image";
 import { Lock } from "lucide-react";
@@ -7,7 +8,7 @@ import { calculateOrderTotals } from "@/lib/calculations";
 
 import { toast } from "sonner";
 
-export function CheckoutSummary() {
+export const CheckoutSummary = React.memo(function CheckoutSummary() {
   const { cart, buyNowItem } = useCart();
   
   const activeCart = buyNowItem ? [buyNowItem] : cart;
@@ -103,4 +104,4 @@ export function CheckoutSummary() {
 
     </div>
   );
-}
+});

@@ -12,9 +12,9 @@ interface ProductSidebarProps {
 
 
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
-export function ProductSidebar({
+export const ProductSidebar = React.memo(function ProductSidebar({
   searchQuery,
   setSearchQuery,
   selectedCategory,
@@ -110,4 +110,4 @@ export function ProductSidebar({
       
     </aside>
   );
-}
+});

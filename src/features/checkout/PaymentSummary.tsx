@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Lock, Loader2, CheckCircle2 } from "lucide-react";
@@ -23,7 +23,7 @@ interface PaymentSummaryProps {
   selectedMethod: PaymentMethodType;
 }
 
-export function PaymentSummary({ selectedMethod }: PaymentSummaryProps) {
+export const PaymentSummary = React.memo(function PaymentSummary({ selectedMethod }: PaymentSummaryProps) {
   const router = useRouter();
   const { cart, cartTotal, clearCart, buyNowItem, setBuyNowItem } = useCart();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -353,4 +353,4 @@ export function PaymentSummary({ selectedMethod }: PaymentSummaryProps) {
       )}
     </>
   );
-}
+});

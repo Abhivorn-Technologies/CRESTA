@@ -1,3 +1,4 @@
+import React from "react";
 import { ShieldCheck, Truck, Award, Users } from "lucide-react";
 
 const features = [
@@ -23,7 +24,7 @@ const features = [
   }
 ];
 
-export function WhyChooseCresta() {
+export const WhyChooseCresta = React.memo(function WhyChooseCresta() {
   return (
     <section className="w-full bg-white px-6 lg:px-10 pb-32">
       <div className="mx-auto max-w-[1440px] flex flex-col items-center">
@@ -62,4 +63,4 @@ export function WhyChooseCresta() {
       </div>
     </section>
   );
-}
+});

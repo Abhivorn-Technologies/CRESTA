@@ -1,10 +1,11 @@
 "use client";
+import React from "react";
 
 import { User, Zap, Star } from "lucide-react";
 
 import { toast } from "sonner";
 
-export function EnquiryForm() {
+export const EnquiryForm = React.memo(function EnquiryForm() {
   return (
     <div className="flex-1 max-w-[851px] w-full border border-gray-100 rounded-2xl p-8 md:p-12 shadow-sm bg-white flex flex-col gap-10">
       
@@ -128,4 +129,4 @@ export function EnquiryForm() {
 
     </div>
   );
-}
+});

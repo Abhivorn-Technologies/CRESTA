@@ -1,7 +1,9 @@
 "use client";
 
 import { Navbar } from "@/components/layout/Navbar";
-import { ProductsLayout } from "@/features/products/ProductsLayout";
+import dynamic from "next/dynamic";
+
+const ProductsLayout = dynamic(() => import("@/features/products/ProductsLayout").then(m => m.ProductsLayout));
 import { Heart } from "lucide-react";
 import Link from "next/link";
 

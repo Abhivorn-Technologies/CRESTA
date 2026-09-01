@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Check, X } from "lucide-react";
 
 import { toast } from "sonner";
 
-export function PersonalInfoForm() {
+export const PersonalInfoForm = React.memo(function PersonalInfoForm() {
   const { user, setUser } = useAuth();
   
   const [isSaving, setIsSaving] = useState(false);
@@ -250,4 +250,4 @@ export function PersonalInfoForm() {
 
     </div>
   );
-}
+});

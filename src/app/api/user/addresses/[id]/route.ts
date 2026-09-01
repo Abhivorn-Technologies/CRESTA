@@ -26,7 +26,19 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     }
 
     const { id: addressId } = await params;
-    const updateData = await req.json();
+    const updateDataRaw = await req.json();
+    
+    const sanitize = (val: any) => {
+      if (typeof val !== 'string') return val;
+      return val.trim().replace(/\s+/g, ' ').replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    };
+
+    const updateData: any = {};
+    for (const key in updateDataRaw) {
+      if (Object.prototype.hasOwnProperty.call(updateDataRaw, key)) {
+        updateData[key] = sanitize(updateDataRaw[key]);
+      }
+    }
 
     await connectToDatabase();
     const user = await User.findById(userId);

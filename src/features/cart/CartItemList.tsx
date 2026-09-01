@@ -1,3 +1,4 @@
+import React from "react";
 import { Product } from "@/data/products";
 import { CartItem } from "./CartItem";
 import { useCart } from "@/context/CartContext";
@@ -6,7 +7,7 @@ interface CartItemListProps {
   items: { product: Product; quantity: number }[];
 }
 
-export function CartItemList({ items }: CartItemListProps) {
+export const CartItemList = React.memo(function CartItemList({ items }: CartItemListProps) {
   const { clearCart } = useCart();
   return (
     <div className="flex flex-col">
@@ -31,4 +32,4 @@ export function CartItemList({ items }: CartItemListProps) {
       </div>
     </div>
   );
-}
+});

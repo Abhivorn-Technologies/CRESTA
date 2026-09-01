@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowLeft, Plus, Edit2, Loader2, MapPin } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -10,7 +10,7 @@ import { IAddress } from "@/models/User";
 
 import { toast } from "sonner";
 
-export function CheckoutForm() {
+export const CheckoutForm = React.memo(function CheckoutForm() {
   const router = useRouter();
   const { user, isLoading: authLoading } = useAuth();
   
@@ -250,4 +250,4 @@ export function CheckoutForm() {
       />
     </div>
   );
-}
+});

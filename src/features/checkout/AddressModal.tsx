@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { X, Loader2 } from "lucide-react";
 import { IAddress } from "@/models/User";
 
@@ -12,7 +12,7 @@ interface AddressModalProps {
   isGuest?: boolean;
 }
 
-export function AddressModal({ isOpen, onClose, onSave, addressToEdit, isGuest = false }: AddressModalProps) {
+export const AddressModal = React.memo(function AddressModal({ isOpen, onClose, onSave, addressToEdit, isGuest = false }: AddressModalProps) {
   const [formData, setFormData] = useState({
     fullName: "",
     phone: "",
@@ -116,17 +116,65 @@ export function AddressModal({ isOpen, onClose, onSave, addressToEdit, isGuest =
     setError("");
 
     try {
+      const sanitize = (str: string) => (str || "").trim().replace(/\s+/g, " ");
+
+      const fullName = sanitize(formData.fullName);
+      const phone = sanitize(formData.phone);
+      const apartment = sanitize(formData.apartment);
+      const street = sanitize(formData.street);
+      const postalCode = sanitize(formData.postalCode);
+      const area = formData.area;
+
+      // 1. Full name
+      if (!fullName || !/^[a-zA-Z]+([ \-'][a-zA-Z]+)*$/.test(fullName) || fullName.length < 2 || fullName.length > 50) {
+        throw new Error("Please enter a valid full name (letters only, min 2 characters).");
+      }
+
+      // 2. Mobile number
+      if (!phone || !/^[6-9]\d{9}$/.test(phone)) {
+        throw new Error("Please enter a valid 10-digit mobile number starting with 6, 7, 8, or 9.");
+      }
+
+      // 3. Service Area
+      if (!area) {
+        throw new Error("Please select a service area or locality.");
+      }
+
+      // 4. Pincode
+      if (!postalCode || !/^[1-9][0-9]{5}$/.test(postalCode)) {
+        throw new Error("Please enter a valid 6-digit postal PIN code.");
+      }
+
+      // 5. Flat, House no.
+      if (!apartment || !/^[a-zA-Z0-9\s,./\-#&()]{3,100}$/.test(apartment)) {
+        throw new Error("Please enter a valid address line (min 3 characters, avoid special characters like %, $, ;, ).");
+      }
+
+      // 6. Area, Street
+      if (!street || !/^[a-zA-Z0-9\s,./\-&]{3,100}$/.test(street)) {
+        throw new Error("Please enter a valid street or area name (letters, numbers, commas, and hyphens only).");
+      }
+
+      const sanitizedData = {
+        ...formData,
+        fullName,
+        phone,
+        apartment,
+        street,
+        postalCode,
+      };
+
       // Verify Pincode is serviceable before saving
-      const pincodeRes = await fetch(`/api/delivery/check-pincode?pincode=${formData.postalCode}`);
+      const pincodeRes = await fetch(`/api/delivery/check-pincode?pincode=${sanitizedData.postalCode}`);
       const pincodeData = await pincodeRes.json();
       
       if (!pincodeData.data?.serviceable) {
-        throw new Error(`Sorry, we do not deliver to pincode ${formData.postalCode}.`);
+        throw new Error(`Sorry, we do not deliver to pincode ${sanitizedData.postalCode}.`);
       }
 
       if (isGuest) {
         // Bypass API for guests, pass data directly to parent to save in session storage
-        onSave(formData as IAddress);
+        onSave(sanitizedData as IAddress);
         onClose();
         return;
       }
@@ -137,7 +185,7 @@ export function AddressModal({ isOpen, onClose, onSave, addressToEdit, isGuest =
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(sanitizedData),
       });
 
       const data = await res.json();
@@ -312,4 +360,4 @@ export function AddressModal({ isOpen, onClose, onSave, addressToEdit, isGuest =
       </div>
     </div>
   );
-}
+});

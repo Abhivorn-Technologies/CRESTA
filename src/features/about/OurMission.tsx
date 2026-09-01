@@ -1,6 +1,7 @@
+import React from "react";
 import Image from "next/image";
 
-export function OurMission() {
+export const OurMission = React.memo(function OurMission() {
   return (
     <section className="w-full bg-white py-20 lg:py-32">
       <div className="mx-auto max-w-[1440px] px-6 lg:px-10">
@@ -51,4 +52,4 @@ export function OurMission() {
       </div>
     </section>
   );
-}
+});

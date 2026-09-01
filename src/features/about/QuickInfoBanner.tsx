@@ -1,7 +1,8 @@
+import React from "react";
 import Image from "next/image";
 import { ShoppingCart, ShoppingBag, Phone } from "lucide-react";
 
-export function QuickInfoBanner() {
+export const QuickInfoBanner = React.memo(function QuickInfoBanner() {
   return (
     <section className="w-full px-4 md:px-6 lg:px-10 pb-20 pt-8 md:pb-24 md:pt-12">
       <div className="mx-auto max-w-[1440px]">
@@ -122,4 +123,4 @@ export function QuickInfoBanner() {
       </div>
     </section>
   );
-}
+});

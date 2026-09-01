@@ -1,3 +1,4 @@
+import React from "react";
 import Image from "next/image";
 import { Product } from "@/data/products";
 import { useCart } from "@/context/CartContext";
@@ -7,7 +8,7 @@ interface CartItemProps {
   quantity: number;
 }
 
-export function CartItem({ product, quantity }: CartItemProps) {
+export const CartItem = React.memo(function CartItem({ product, quantity }: CartItemProps) {
   const { updateQuantity, removeFromCart } = useCart();
 
   return (
@@ -100,4 +101,4 @@ export function CartItem({ product, quantity }: CartItemProps) {
       </div>
     </div>
   );
-}
+});

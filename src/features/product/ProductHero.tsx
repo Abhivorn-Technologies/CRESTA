@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { Star, Minus, Plus, ShoppingCart, Snowflake, Truck, ChevronDown, ChevronUp } from "lucide-react";
 import { Product } from "@/data/products";
 import { useCart } from "@/context/CartContext";
 
-export function ProductHero({ product }: { product: Product }) {
+export const ProductHero = React.memo(function ProductHero({ product }: { product: Product }) {
   const { cart, addToCart, setBuyNowItem, updateQuantity } = useCart();
   const [activeSize, setActiveSize] = useState("1 Litre");
   const [activeImage, setActiveImage] = useState(0);
@@ -213,4 +213,4 @@ export function ProductHero({ product }: { product: Product }) {
 
     </div>
   );
-}
+});

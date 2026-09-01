@@ -1,10 +1,11 @@
 "use client";
 
+import React from "react";
 import { motion } from "framer-motion";
 import { CmsImage } from "@/components/ui/CmsImage";
 import { CheckCircle2, ShieldCheck, ThermometerSnowflake, UserCheck } from "lucide-react";
 
-export function AuthorizedDistributor() {
+export const AuthorizedDistributor = React.memo(function AuthorizedDistributor() {
   return (
     <section className="relative w-full py-20 bg-white">
       <div className="mx-auto max-w-[1440px] px-6 lg:px-10">
@@ -76,4 +77,4 @@ export function AuthorizedDistributor() {
       </div>
     </section>
   );
-}
+});

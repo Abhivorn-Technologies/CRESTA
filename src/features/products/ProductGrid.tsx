@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,7 +15,7 @@ interface ProductGridProps {
   products: Product[];
 }
 
-export function ProductGrid({ products }: ProductGridProps) {
+export const ProductGrid = React.memo(function ProductGrid({ products }: ProductGridProps) {
   const { toggleWishlist, isInWishlist } = useWishlist();
   const { cart, addToCart, updateQuantity, setBuyNowItem } = useCart();
   const { user } = useAuth();
@@ -158,4 +158,4 @@ export function ProductGrid({ products }: ProductGridProps) {
       })}
     </div>
   );
-}
+});

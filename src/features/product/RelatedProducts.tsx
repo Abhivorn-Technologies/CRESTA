@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ShoppingCart, Heart } from "lucide-react";
@@ -9,7 +9,7 @@ import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
 import { useAuth } from "@/context/AuthContext";
 
-export function RelatedProducts({ currentProductId }: { currentProductId?: string }) {
+export const RelatedProducts = React.memo(function RelatedProducts({ currentProductId }: { currentProductId?: string }) {
   const { cart, addToCart, setBuyNowItem, updateQuantity } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
   const { user } = useAuth();
@@ -173,4 +173,4 @@ export function RelatedProducts({ currentProductId }: { currentProductId?: strin
       </div>
     </div>
   );
-}
+});

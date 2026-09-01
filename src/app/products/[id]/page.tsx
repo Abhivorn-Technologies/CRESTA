@@ -1,7 +1,9 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { ProductHero } from "@/features/product/ProductHero";
-import { RelatedProducts } from "@/features/product/RelatedProducts";
+import dynamic from "next/dynamic";
+
+const RelatedProducts = dynamic(() => import("@/features/product/RelatedProducts").then(m => m.RelatedProducts));
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { notFound } from "next/navigation";

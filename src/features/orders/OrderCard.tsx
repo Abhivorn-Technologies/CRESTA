@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Star, Navigation2, X, Lock } from "lucide-react";
@@ -11,7 +11,7 @@ interface OrderCardProps {
   onOrderUpdate?: (id: string, status: string) => void;
 }
 
-export function OrderCard({ order, onOrderUpdate }: OrderCardProps) {
+export const OrderCard = React.memo(function OrderCard({ order, onOrderUpdate }: OrderCardProps) {
   const [isCancelling, setIsCancelling] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [cancelError, setCancelError] = useState("");
@@ -246,4 +246,4 @@ export function OrderCard({ order, onOrderUpdate }: OrderCardProps) {
       )}
     </>
   );
-}
+});

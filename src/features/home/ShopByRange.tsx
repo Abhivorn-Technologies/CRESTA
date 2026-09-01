@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
@@ -21,7 +21,7 @@ const colorPalette = [
   "from-[#bef264] to-[#a3e635]",
 ];
 
-export function ShopByRange() {
+export const ShopByRange = React.memo(function ShopByRange() {
   const [startIndex, setStartIndex] = useState(0);
   const [itemsToShow, setItemsToShow] = useState(4);
   const [isClient, setIsClient] = useState(false);
@@ -183,4 +183,4 @@ export function ShopByRange() {
       </div>
     </section>
   );
-}
+});

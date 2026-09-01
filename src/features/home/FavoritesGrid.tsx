@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -10,7 +10,7 @@ import { useWishlist } from "@/context/WishlistContext";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 
-export function FavoritesGrid() {
+export const FavoritesGrid = React.memo(function FavoritesGrid() {
   const { toggleWishlist, isInWishlist } = useWishlist();
   const { cart, addToCart, setBuyNowItem, updateQuantity } = useCart();
   const { user } = useAuth();
@@ -208,4 +208,4 @@ export function FavoritesGrid() {
       </div>
     </section>
   );
-}
+});

@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -16,7 +17,7 @@ const features = [
   { title: "Cold Chain Delivery", icon: Snowflake, color: "text-cyan-500", bg: "bg-cyan-50", border: "border-cyan-100" },
 ];
 
-export function HeroSection() {
+export const HeroSection = React.memo(function HeroSection() {
   return (
     <section className="relative min-h-[90vh] flex items-center w-full overflow-hidden bg-[#fdfdfd] pt-[80px]">
       {/* Soft Background Blurs */}
@@ -124,4 +125,4 @@ export function HeroSection() {
       </div>
     </section>
   );
-}
+});

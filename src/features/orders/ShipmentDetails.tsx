@@ -1,9 +1,9 @@
 "use client";
 
 import { Truck, Clock, MapPin, Settings, X, Calendar, Phone } from "lucide-react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
-export function ShipmentDetails() {
+export const ShipmentDetails = React.memo(function ShipmentDetails() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Body scroll lock
@@ -138,4 +138,4 @@ export function ShipmentDetails() {
     )}
     </>
   );
-}
+});

@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 
 import { ShieldCheck, Plus, ArrowLeft } from "lucide-react";
 import Image from "next/image";
@@ -10,7 +11,7 @@ interface PaymentFormProps {
   onSelectMethod: (method: PaymentMethodType) => void;
 }
 
-export function PaymentForm({ selectedMethod, onSelectMethod }: PaymentFormProps) {
+export const PaymentForm = React.memo(function PaymentForm({ selectedMethod, onSelectMethod }: PaymentFormProps) {
   return (
     <div className="flex-1 max-w-[760px] w-full h-fit flex flex-col gap-6">
       
@@ -131,4 +132,4 @@ export function PaymentForm({ selectedMethod, onSelectMethod }: PaymentFormProps
       
     </div>
   );
-}
+});

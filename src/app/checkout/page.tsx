@@ -1,7 +1,9 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { CheckoutForm } from "@/features/checkout/CheckoutForm";
-import { CheckoutSummary } from "@/features/checkout/CheckoutSummary";
+import dynamic from "next/dynamic";
+
+const CheckoutForm = dynamic(() => import("@/features/checkout/CheckoutForm").then(m => m.CheckoutForm));
+const CheckoutSummary = dynamic(() => import("@/features/checkout/CheckoutSummary").then(m => m.CheckoutSummary));
 import { Check } from "lucide-react";
 
 export default function CheckoutPage() {

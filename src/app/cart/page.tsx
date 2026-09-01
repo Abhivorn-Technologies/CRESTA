@@ -1,8 +1,10 @@
 "use client";
 
 import { Navbar } from "@/components/layout/Navbar";
-import { CartItemList } from "@/features/cart/CartItemList";
-import { OrderSummary } from "@/features/cart/OrderSummary";
+import dynamic from "next/dynamic";
+
+const CartItemList = dynamic(() => import("@/features/cart/CartItemList").then(m => m.CartItemList));
+const OrderSummary = dynamic(() => import("@/features/cart/OrderSummary").then(m => m.OrderSummary));
 import { useCart } from "@/context/CartContext";
 import Link from "next/link";
 

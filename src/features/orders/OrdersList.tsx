@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Search, ChevronLeft, ChevronRight, Loader2, ChevronRight as ChevronRightIcon } from "lucide-react";
 import Link from "next/link";
 import { OrderCard } from "./OrderCard";
@@ -11,7 +11,7 @@ const ORDER_STATUS_FILTERS = ["On the way", "Delivered", "Cancelled", "Returned"
 const currentYear = new Date().getFullYear();
 const ORDER_TIME_FILTERS = ["Last 30 days", currentYear.toString(), (currentYear - 1).toString(), "Older"];
 
-export function OrdersList() {
+export const OrdersList = React.memo(function OrdersList() {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [orders, setOrders] = useState<any[]>([]);
@@ -282,4 +282,4 @@ export function OrdersList() {
       </div>
     </div>
   );
-}
+});

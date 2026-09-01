@@ -1,10 +1,11 @@
 "use client";
+import React from "react";
 
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { calculateOrderTotals } from "@/lib/calculations";
 
-export function OrderSummary() {
+export const OrderSummary = React.memo(function OrderSummary() {
   const router = useRouter();
   const { cart, cartCount, setBuyNowItem } = useCart();
   
@@ -82,4 +83,4 @@ export function OrderSummary() {
       </p>
     </div>
   );
-}
+});

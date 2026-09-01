@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { 
   FolderIcon, 
@@ -13,7 +13,7 @@ import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 
-export function ProfileSidebar() {
+export const ProfileSidebar = React.memo(function ProfileSidebar() {
   const { user, setUser } = useAuth();
   const router = useRouter();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -130,4 +130,4 @@ export function ProfileSidebar() {
       )}
     </div>
   );
-}
+});

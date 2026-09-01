@@ -1,8 +1,9 @@
 "use client";
 
+import React from "react";
 import { motion } from "framer-motion";
 
-export function AboutHero() {
+export const AboutHero = React.memo(function AboutHero() {
   return (
     <section className="relative w-full flex flex-col pt-[120px]">
       
@@ -79,4 +80,4 @@ export function AboutHero() {
       
     </section>
   );
-}
+});

@@ -1,11 +1,12 @@
 "use client";
 
+import React from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { CmsImage } from "@/components/ui/CmsImage";
 import Link from "next/link";
 
-export function PromotionalBanner() {
+export const PromotionalBanner = React.memo(function PromotionalBanner() {
   return (
     <section className="w-full py-12 lg:py-16 bg-[#fdfdfd]">
       <div className="mx-auto max-w-[1440px] px-6 lg:px-10">
@@ -46,4 +47,4 @@ export function PromotionalBanner() {
       </div>
     </section>
   );
-}
+});

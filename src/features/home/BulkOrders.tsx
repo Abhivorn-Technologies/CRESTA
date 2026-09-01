@@ -1,12 +1,13 @@
 "use client";
 
+import React from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { CmsImage } from "@/components/ui/CmsImage";
 import Link from "next/link";
 import { Heart, Briefcase, Gift, MoreHorizontal } from "lucide-react";
 
-export function BulkOrders() {
+export const BulkOrders = React.memo(function BulkOrders() {
   return (
     <section className="relative w-full py-16 bg-white overflow-hidden">
       <div className="mx-auto max-w-[1440px] px-6 lg:px-10 flex items-center justify-center">
@@ -103,4 +104,4 @@ export function BulkOrders() {
       </div>
     </section>
   );
-}
+});

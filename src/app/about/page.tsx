@@ -1,8 +1,10 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { AboutHero } from "@/features/about/AboutHero";
-import { OurMission } from "@/features/about/OurMission";
-import { QuickInfoBanner } from "@/features/about/QuickInfoBanner";
-import { WhyChooseCresta } from "@/features/about/WhyChooseCresta";
+import dynamic from "next/dynamic";
+
+const OurMission = dynamic(() => import("@/features/about/OurMission").then(m => m.OurMission));
+const QuickInfoBanner = dynamic(() => import("@/features/about/QuickInfoBanner").then(m => m.QuickInfoBanner));
+const WhyChooseCresta = dynamic(() => import("@/features/about/WhyChooseCresta").then(m => m.WhyChooseCresta));
 
 export default function AboutPage() {
   return (

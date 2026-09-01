@@ -46,7 +46,21 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { fullName, phone, street, apartment, city, state, postalCode, isDefault } = await req.json();
+    const rawData = await req.json();
+    
+    const sanitize = (val: any) => {
+      if (typeof val !== 'string') return val;
+      return val.trim().replace(/\s+/g, ' ').replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    };
+
+    const fullName = sanitize(rawData.fullName);
+    const phone = sanitize(rawData.phone);
+    const street = sanitize(rawData.street);
+    const apartment = sanitize(rawData.apartment);
+    const city = sanitize(rawData.city);
+    const state = sanitize(rawData.state);
+    const postalCode = sanitize(rawData.postalCode);
+    const isDefault = rawData.isDefault;
 
     if (!fullName || !phone || !street || !city || !postalCode) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });

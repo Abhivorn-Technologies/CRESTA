@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -10,7 +10,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
 import { Button } from "@/components/ui/button";
 
-export function Navbar() {
+export const Navbar = React.memo(function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -28,6 +28,24 @@ export function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const openPincodeModal = useCallback(() => setShowPincodeModal(true), []);
+  const closePincodeModal = useCallback(() => {
+    setShowPincodeModal(false);
+    setPincode("");
+    setPincodeStatus("idle");
+  }, []);
+
+  const openMobileMenu = useCallback(() => setIsMobileMenuOpen(true), []);
+  const closeMobileMenu = useCallback(() => setIsMobileMenuOpen(false), []);
+
+  const openLogoutModal = useCallback(() => setShowLogoutModal(true), []);
+  const closeLogoutModal = useCallback(() => setShowLogoutModal(false), []);
+
+  const handleLogout = useCallback(() => {
+    setShowLogoutModal(false);
+    logout();
+  }, [logout]);
 
   // Body scroll lock
   useEffect(() => {
@@ -93,7 +111,7 @@ export function Navbar() {
 
         {/* Right Actions */}
         <div className="flex items-center gap-5 lg:gap-6 text-[#4b5563]">
-          <button onClick={() => setShowPincodeModal(true)} className="hidden lg:flex items-center gap-1.5 text-[14px] hover:text-[#101b4d] transition-colors font-medium">
+          <button onClick={openPincodeModal} className="hidden lg:flex items-center gap-1.5 text-[14px] hover:text-[#101b4d] transition-colors font-medium">
             <MapPin className="size-4.5" />
             <span>Check Pincode</span>
           </button>
@@ -116,7 +134,7 @@ export function Navbar() {
                   <Package className="size-4 text-gray-400" />
                   Orders
                 </Link>
-                <button onClick={() => setShowLogoutModal(true)} className="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50 flex items-center gap-3 border-t border-gray-50 transition-colors">
+                <button onClick={openLogoutModal} className="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50 flex items-center gap-3 border-t border-gray-50 transition-colors">
                   <LogOut className="size-4 text-red-400" />
                   Logout
                 </button>
@@ -144,7 +162,7 @@ export function Navbar() {
             )}
           </Link>
 
-          <button onClick={() => setIsMobileMenuOpen(true)} className="lg:hidden p-2 -mr-2 text-[#1F2937]">
+          <button onClick={openMobileMenu} className="lg:hidden p-2 -mr-2 text-[#1F2937]">
             <Menu className="size-7" />
           </button>
         </div>
@@ -160,7 +178,7 @@ export function Navbar() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="fixed inset-0 bg-black/30 backdrop-blur-sm" 
-              onClick={() => setIsMobileMenuOpen(false)} 
+              onClick={closeMobileMenu} 
             />
             
             {/* Panel */}
@@ -173,7 +191,7 @@ export function Navbar() {
             >
               {/* Header */}
               <div className="flex items-center justify-between mb-8">
-                <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>
+                <Link href="/" onClick={closeMobileMenu}>
                   <Image 
                     src="/cresta-logo.png" 
                     alt="Cresta Global Logo" 
@@ -185,7 +203,7 @@ export function Navbar() {
                 <button
                   type="button"
                   className="-m-2.5 rounded-md p-2.5 text-gray-700 hover:bg-gray-100 transition-colors"
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  onClick={closeMobileMenu}
                 >
                   <span className="sr-only">Close menu</span>
                   <X className="h-6 w-6" aria-hidden="true" />
@@ -246,7 +264,7 @@ export function Navbar() {
                     <Link
                       href="/profile"
                       className="block rounded-lg px-3 py-3 text-base font-semibold text-gray-900 hover:bg-gray-50 flex items-center gap-3 transition-colors"
-                      onClick={() => setIsMobileMenuOpen(false)}
+                      onClick={closeMobileMenu}
                     >
                       <User className="size-5 text-gray-500" />
                       My Profile ({user.name.split(' ')[0]})
@@ -266,7 +284,7 @@ export function Navbar() {
                   <Link
                     href="/login"
                     className="block rounded-lg px-3 py-3 text-base font-semibold text-gray-900 hover:bg-gray-50 flex items-center gap-3 transition-colors"
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    onClick={closeMobileMenu}
                   >
                     <User className="size-5 text-gray-500" />
                     Sign in
@@ -309,16 +327,13 @@ export function Navbar() {
 
             <div className="flex flex-row items-center justify-center gap-4 w-full">
               <button 
-                onClick={() => setShowLogoutModal(false)}
+                onClick={closeLogoutModal}
                 className="rounded-full px-8 py-3 text-sm font-bold border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors"
               >
                 Cancel
               </button>
               <button 
-                onClick={() => {
-                  setShowLogoutModal(false);
-                  logout();
-                }}
+                onClick={handleLogout}
                 className="rounded-full px-8 py-3 text-sm font-bold bg-red-600 hover:bg-red-700 text-white transition-colors shadow-md"
               >
                 Sign Out
@@ -333,20 +348,12 @@ export function Navbar() {
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
           <div 
             className="absolute inset-0 bg-white/40 backdrop-blur-md"
-            onClick={() => {
-              setShowPincodeModal(false);
-              setPincode("");
-              setPincodeStatus("idle");
-            }}
+            onClick={closePincodeModal}
           />
           <div className="relative bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl border border-gray-100 flex flex-col items-center text-center animate-in fade-in zoom-in duration-200">
             <button 
               className="absolute top-4 right-4 text-gray-400 hover:text-gray-900 transition-colors"
-              onClick={() => {
-                setShowPincodeModal(false);
-                setPincode("");
-                setPincodeStatus("idle");
-              }}
+              onClick={closePincodeModal}
             >
               <X className="size-5" />
             </button>
@@ -421,4 +428,4 @@ export function Navbar() {
       )}
     </nav>
   );
-}
+});

@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { CmsImage } from "@/components/ui/CmsImage";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -55,7 +55,7 @@ const occasions = [
   },
 ];
 
-export function OccasionsSection() {
+export const OccasionsSection = React.memo(function OccasionsSection() {
   const [selectedOccasion, setSelectedOccasion] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({ name: "", phone: "" });
@@ -329,4 +329,4 @@ export function OccasionsSection() {
       </Dialog>
     </section>
   );
-}
+});

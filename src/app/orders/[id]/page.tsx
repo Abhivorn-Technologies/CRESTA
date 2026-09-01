@@ -5,10 +5,12 @@ import { Navbar } from "@/components/layout/Navbar";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle2, Truck, XCircle, Clock, MapPin, Receipt, Box } from "lucide-react";
-import { PrintButton } from "@/features/orders/PrintButton";
-import { RefundDialog } from "@/features/orders/RefundDialog";
-import { LiveTrackingMapWrapper as LiveTrackingMap } from "@/features/orders/LiveTrackingMapWrapper";
-import { OrderStatusPoller } from "@/features/orders/OrderStatusPoller";
+import dynamic from "next/dynamic";
+
+const PrintButton = dynamic(() => import("@/features/orders/PrintButton").then(m => m.PrintButton));
+const RefundDialog = dynamic(() => import("@/features/orders/RefundDialog").then(m => m.RefundDialog));
+const OrderStatusPoller = dynamic(() => import("@/features/orders/OrderStatusPoller").then(m => m.OrderStatusPoller), { ssr: false });
+const LiveTrackingMap = dynamic(() => import("@/features/orders/LiveTrackingMapWrapper").then(m => m.LiveTrackingMapWrapper));
 
 export default async function OrderDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
