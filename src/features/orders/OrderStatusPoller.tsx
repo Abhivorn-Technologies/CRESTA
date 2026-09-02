@@ -3,13 +3,27 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-export function OrderStatusPoller({ orderId, currentStatus }: { orderId: string, currentStatus: string }) {
+export function OrderStatusPoller({ 
+  orderId, 
+  currentStatus, 
+  currentPaymentStatus,
+  isEligibleForRefund 
+}: { 
+  orderId: string, 
+  currentStatus: string, 
+  currentPaymentStatus?: string,
+  isEligibleForRefund?: boolean
+}) {
   const router = useRouter();
 
   useEffect(() => {
     // Only poll if the order is not in a final state
-    if (currentStatus === "Delivered" || currentStatus === "Cancelled") {
-      return;
+    if (currentStatus === "Delivered") return;
+    if (currentStatus === "Cancelled") {
+      // If cancelled but waiting for a refund, keep polling
+      if (!isEligibleForRefund || currentPaymentStatus === "refunded") {
+        return;
+      }
     }
 
     const checkStatus = async () => {
@@ -23,8 +37,10 @@ export function OrderStatusPoller({ orderId, currentStatus }: { orderId: string,
         else if (data.order?.orderStatus === "out_for_delivery") newStatus = "Out for Delivery";
         else if (data.order?.orderStatus === "cancelled") newStatus = "Cancelled";
 
+        const newPaymentStatus = data.order?.paymentStatus;
+
         // If the status changed dynamically on the server, refresh the page!
-        if (newStatus !== currentStatus) {
+        if (newStatus !== currentStatus || (newPaymentStatus && newPaymentStatus !== currentPaymentStatus)) {
           router.refresh();
         }
       } catch (error) {
@@ -34,7 +50,7 @@ export function OrderStatusPoller({ orderId, currentStatus }: { orderId: string,
 
     const interval = setInterval(checkStatus, 3000);
     return () => clearInterval(interval);
-  }, [orderId, currentStatus, router]);
+  }, [orderId, currentStatus, currentPaymentStatus, isEligibleForRefund, router]);
 
   return null; // Invisible logical component
 }

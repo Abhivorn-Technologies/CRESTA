@@ -17,6 +17,7 @@ export const Navbar = React.memo(function Navbar() {
   const [showPincodeModal, setShowPincodeModal] = useState(false);
   const [pincode, setPincode] = useState("");
   const [pincodeStatus, setPincodeStatus] = useState<"idle" | "checking" | "success" | "error">("idle");
+  const [pincodeMessage, setPincodeMessage] = useState("");
   const pathname = usePathname();
   const { user, logout } = useAuth();
   const { cartCount } = useCart();
@@ -34,6 +35,7 @@ export const Navbar = React.memo(function Navbar() {
     setShowPincodeModal(false);
     setPincode("");
     setPincodeStatus("idle");
+    setPincodeMessage("");
   }, []);
 
   const openMobileMenu = useCallback(() => setIsMobileMenuOpen(true), []);
@@ -384,17 +386,23 @@ export const Navbar = React.memo(function Navbar() {
 
             {pincodeStatus === "idle" && (
               <button 
-                onClick={() => {
+                onClick={async () => {
                   if (pincode.length !== 6) return;
                   setPincodeStatus("checking");
-                  setTimeout(() => {
-                    // Mock logic: Hyderabad pincodes start with 500
-                    if (pincode.startsWith("50")) {
+                  try {
+                    const response = await fetch(`/api/delivery/check-pincode?pincode=${pincode}`);
+                    const payload = await response.json();
+                    if (payload.data?.serviceable) {
                       setPincodeStatus("success");
+                      setPincodeMessage(payload.message || `Yes! We deliver to ${pincode}.`);
                     } else {
                       setPincodeStatus("error");
+                      setPincodeMessage(payload.message || "Sorry, we don't deliver here yet.");
                     }
-                  }, 1000);
+                  } catch (err) {
+                    setPincodeStatus("error");
+                    setPincodeMessage("Something went wrong. Try again.");
+                  }
                 }}
                 disabled={pincode.length !== 6}
                 className="w-full px-4 py-3.5 rounded-xl bg-[#101b4d] text-white font-bold text-sm hover:bg-[#e6127d] transition-colors disabled:opacity-50 disabled:hover:bg-[#101b4d]"
@@ -411,15 +419,14 @@ export const Navbar = React.memo(function Navbar() {
             )}
 
             {pincodeStatus === "success" && (
-              <div className="w-full px-4 py-3.5 rounded-xl bg-green-50 border border-green-200 text-green-700 font-bold text-sm flex items-center justify-center">
-                🎉 Yes! We deliver to {pincode}.
+              <div className="w-full px-4 py-3.5 rounded-xl bg-green-50 border border-green-200 text-green-700 font-bold text-sm flex items-center justify-center text-center">
+                🎉 {pincodeMessage}
               </div>
             )}
 
             {pincodeStatus === "error" && (
-              <div className="w-full px-4 py-3.5 rounded-xl bg-red-50 border border-red-200 text-red-600 font-bold text-sm flex items-center justify-center flex-col gap-1">
-                <span>Sorry, we don't deliver here yet.</span>
-                <span className="text-xs font-normal text-red-400">Currently serving Hyderabad (500xxx)</span>
+              <div className="w-full px-4 py-3.5 rounded-xl bg-red-50 border border-red-200 text-red-600 font-bold text-sm flex items-center justify-center flex-col gap-1 text-center">
+                <span>{pincodeMessage}</span>
               </div>
             )}
 

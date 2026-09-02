@@ -22,8 +22,11 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   try {
     const { id: orderId } = await params;
     const user = await verifyAuth();
-    if (!user || user.role !== "delivery_partner") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized: No valid token found" }, { status: 401 });
+    }
+    if (user.role !== "delivery_partner") {
+      return NextResponse.json({ error: `Unauthorized: Invalid role '${user.role}'` }, { status: 401 });
     }
 
     await connectToDatabase();

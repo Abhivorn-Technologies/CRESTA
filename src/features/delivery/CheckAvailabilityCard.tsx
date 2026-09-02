@@ -1,12 +1,36 @@
 "use client";
 
 import { useState } from "react";
-import { MapPin } from "lucide-react";
+import { MapPin, Loader2, CheckCircle2, XCircle } from "lucide-react";
 import { motion } from "framer-motion";
 
 export function CheckAvailabilityCard() {
   const [pincode, setPincode] = useState("");
   const [city, setCity] = useState("");
+  const [status, setStatus] = useState<"idle" | "checking" | "success" | "error">("idle");
+  const [message, setMessage] = useState("");
+
+  const handleCheck = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (pincode.length !== 6) return;
+    
+    setStatus("checking");
+    try {
+      const response = await fetch(`/api/delivery/check-pincode?pincode=${pincode}`);
+      const payload = await response.json();
+      
+      if (payload.data?.serviceable) {
+        setStatus("success");
+        setMessage(payload.message || `Yes! We deliver to ${pincode}.`);
+      } else {
+        setStatus("error");
+        setMessage(payload.message || "Sorry, we don't deliver here yet.");
+      }
+    } catch (err) {
+      setStatus("error");
+      setMessage("Something went wrong. Try again.");
+    }
+  };
 
   return (
     <motion.div 
@@ -23,7 +47,7 @@ export function CheckAvailabilityCard() {
           Enter your pincode to check if we deliver to your location.
         </p>
 
-        <form className="flex flex-col gap-5 text-left" onSubmit={(e) => e.preventDefault()}>
+        <form className="flex flex-col gap-5 text-left" onSubmit={handleCheck}>
           
           {/* Pincode Input */}
           <div className="flex flex-col gap-1.5">
@@ -34,9 +58,13 @@ export function CheckAvailabilityCard() {
               <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 size-[18px]" />
               <input 
                 type="text" 
-                placeholder="e.g. 400001" 
+                placeholder="e.g. 500001" 
+                maxLength={6}
                 value={pincode}
-                onChange={(e) => setPincode(e.target.value)}
+                onChange={(e) => {
+                  setPincode(e.target.value.replace(/\D/g, ''));
+                  setStatus("idle");
+                }}
                 required
                 className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-gray-200 text-sm font-medium text-[#101b4d] focus:outline-none focus:border-[#101b4d] focus:ring-1 focus:ring-[#101b4d] transition-all placeholder:font-normal"
               />
@@ -51,7 +79,7 @@ export function CheckAvailabilityCard() {
             <div className="relative">
               <input 
                 type="text" 
-                placeholder="e.g. Mumbai" 
+                placeholder="e.g. Hyderabad" 
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
                 className="w-full px-4 py-3.5 rounded-xl border border-gray-200 text-sm font-medium text-[#101b4d] focus:outline-none focus:border-[#101b4d] focus:ring-1 focus:ring-[#101b4d] transition-all placeholder:font-normal"
@@ -59,11 +87,29 @@ export function CheckAvailabilityCard() {
             </div>
           </div>
 
+          {/* Result Messages */}
+          {status === "success" && (
+            <div className="w-full mt-2 px-4 py-3.5 rounded-xl bg-green-50 border border-green-200 text-green-700 font-bold text-sm flex items-center justify-center gap-2 text-center">
+              <CheckCircle2 className="size-5 shrink-0" />
+              <span>{message}</span>
+            </div>
+          )}
+
+          {status === "error" && (
+            <div className="w-full mt-2 px-4 py-3.5 rounded-xl bg-red-50 border border-red-200 text-red-600 font-bold text-sm flex items-center justify-center gap-2 text-center">
+              <XCircle className="size-5 shrink-0" />
+              <span>{message}</span>
+            </div>
+          )}
+
+          {/* Submit Button */}
           <button 
             type="submit"
-            className="w-full mt-2 py-4 rounded-xl bg-[#8592B8] hover:bg-[#101b4d] text-white font-bold text-[15px] transition-colors shadow-md hover:shadow-lg"
+            disabled={pincode.length !== 6 || status === "checking"}
+            className="w-full mt-2 py-4 rounded-xl bg-[#8592B8] hover:bg-[#101b4d] text-white font-bold text-[15px] transition-colors shadow-md hover:shadow-lg disabled:opacity-70 disabled:hover:bg-[#8592B8] flex items-center justify-center gap-2"
           >
-            Check Availability
+            {status === "checking" && <Loader2 className="size-5 animate-spin" />}
+            {status === "checking" ? "Checking..." : "Check Availability"}
           </button>
         </form>
       </div>

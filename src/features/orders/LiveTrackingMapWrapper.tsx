@@ -10,4 +10,4 @@ const LiveTrackingMap = dynamic(() => import("@/features/orders/LiveTrackingMap"
 
 export const LiveTrackingMapWrapper = React.memo(function LiveTrackingMapWrapper(props: any) {
   return <LiveTrackingMap {...props} />;
-}
+});

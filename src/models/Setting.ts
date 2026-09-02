@@ -18,6 +18,7 @@ export interface ISetting extends Document {
     orderAlerts: boolean;
     stockAlerts: boolean;
     newsletterSubscribers: boolean;
+    lastReadAt?: Date;
   };
   localization: {
     currency: string;
@@ -59,6 +60,7 @@ const SettingSchema = new Schema<ISetting>(
       orderAlerts: { type: Boolean, default: true },
       stockAlerts: { type: Boolean, default: true },
       newsletterSubscribers: { type: Boolean, default: false },
+      lastReadAt: { type: Date },
     },
     localization: {
       currency: { type: String, default: 'INR' },

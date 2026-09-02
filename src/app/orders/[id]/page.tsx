@@ -9,7 +9,7 @@ import dynamic from "next/dynamic";
 
 const PrintButton = dynamic(() => import("@/features/orders/PrintButton").then(m => m.PrintButton));
 const RefundDialog = dynamic(() => import("@/features/orders/RefundDialog").then(m => m.RefundDialog));
-const OrderStatusPoller = dynamic(() => import("@/features/orders/OrderStatusPoller").then(m => m.OrderStatusPoller), { ssr: false });
+const OrderStatusPoller = dynamic(() => import("@/features/orders/OrderStatusPoller").then(m => m.OrderStatusPoller));
 const LiveTrackingMap = dynamic(() => import("@/features/orders/LiveTrackingMapWrapper").then(m => m.LiveTrackingMapWrapper));
 
 export default async function OrderDetailsPage({ params }: { params: Promise<{ id: string }> }) {
@@ -109,7 +109,12 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
 
       <div className="mx-auto max-w-[1024px] w-full px-6 pt-32 pb-24 print:pt-10 flex-1">
         
-        <OrderStatusPoller orderId={order.id} currentStatus={order.status} />
+        <OrderStatusPoller 
+          orderId={order.id} 
+          currentStatus={order.status} 
+          currentPaymentStatus={order.paymentStatus}
+          isEligibleForRefund={order.cancellationInfo?.eligibleForRefund}
+        />
 
         {/* Back Navigation */}
         <Link 
