@@ -7,13 +7,16 @@ import crypto from "crypto";
 
 const JWT_SECRET = process.env.JWT_SECRET || "fallback_secret_key_please_change";
 
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID!,
-  key_secret: process.env.RAZORPAY_KEY_SECRET!,
-});
+const getRazorpay = () => {
+  return new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID || "rzp_test_placeholder",
+    key_secret: process.env.RAZORPAY_KEY_SECRET || "test_placeholder_secret",
+  });
+};
 
 export async function POST(req: NextRequest) {
   try {
+    const razorpay = getRazorpay();
     const { items, shippingAddress, paymentMethod } = await req.json();
 
     if (!items || items.length === 0 || !shippingAddress) {

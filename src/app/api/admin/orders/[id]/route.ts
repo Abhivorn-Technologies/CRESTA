@@ -5,10 +5,12 @@ import Razorpay from "razorpay";
 
 export const dynamic = 'force-dynamic';
 
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID || "",
-  key_secret: process.env.RAZORPAY_KEY_SECRET || "",
-});
+const getRazorpay = () => {
+  return new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID || "rzp_test_placeholder",
+    key_secret: process.env.RAZORPAY_KEY_SECRET || "test_placeholder_secret",
+  });
+};
 
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -50,6 +52,8 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
         try {
           // Calculate refund amount in paise (multiply by 100)
           const refundAmount = Math.round(order.totalAmount * 100);
+
+          const razorpay = getRazorpay();
 
           if (order.paymentMethod === "online" && order.razorpayPaymentId) {
             // Standard Razorpay Refund to original payment source
