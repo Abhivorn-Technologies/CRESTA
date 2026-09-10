@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
-import { Footer } from "@/components/layout/Footer";
 import "./globals.css";
 
 const inter = Inter({
@@ -28,6 +27,7 @@ import { WishlistProvider } from "@/context/WishlistContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
 import { Toaster } from "@/components/ui/sonner";
+import { Footer } from "@/components/layout/Footer";
 
 export default function RootLayout({
   children,

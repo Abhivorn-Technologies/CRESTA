@@ -123,12 +123,12 @@ export default function SiteImagesPage() {
     const file = e.target.files?.[0];
     if (!file || !selectedKey) return;
 
-    if (file.size > 5 * 1024 * 1024) {
+    if (file.size > 20 * 1024 * 1024) {
       setDialogConfig({
         open: true,
         type: 'error',
         title: 'File Too Large',
-        message: 'The selected image exceeds the maximum size of 5MB. Please choose a smaller file.'
+        message: 'The selected image exceeds the maximum size of 20MB. Please choose a smaller file.'
       });
       return;
     }

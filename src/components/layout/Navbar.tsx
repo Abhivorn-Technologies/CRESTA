@@ -92,10 +92,10 @@ export const Navbar = React.memo(function Navbar() {
             Products
           </Link>
           <Link 
-            href="/delivery" 
-            className={`transition-colors hover:text-[#101b4d] hover:shadow-sm ${pathname === "/delivery" ? "relative text-[#101b4d] font-semibold after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-full after:bg-[#e6127d]" : ""}`}
+            href="/gallery" 
+            className={`transition-colors hover:text-[#101b4d] hover:shadow-sm ${pathname === "/gallery" ? "relative text-[#101b4d] font-semibold after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-full after:bg-[#e6127d]" : ""}`}
           >
-            Delivery
+            Gallery
           </Link>
           <Link 
             href="/about" 
@@ -229,11 +229,11 @@ export const Navbar = React.memo(function Navbar() {
                   Products
                 </Link>
                 <Link
-                  href="/delivery"
-                  className={`block rounded-lg px-3 py-3 text-base font-semibold transition-colors ${pathname === "/delivery" ? "bg-pink-50 text-[#e6127d]" : "text-gray-900 hover:bg-gray-50"}`}
+                  href="/gallery"
+                  className={`block rounded-lg px-3 py-3 text-base font-semibold transition-colors ${pathname === "/gallery" ? "bg-pink-50 text-[#e6127d]" : "text-gray-900 hover:bg-gray-50"}`}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  Delivery
+                  Gallery
                 </Link>
                 <Link
                   href="/about"

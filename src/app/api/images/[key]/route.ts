@@ -19,7 +19,19 @@ const FALLBACKS: Record<string, string> = {
   'occasion-corporate': '/images/occasion-corporate.jpg',
   'occasion-anniversary': '/images/occasion-anniversary.jpg',
   'occasion-houseparty': '/images/occasion-houseparty.jpg',
-  'occasion-festival': '/images/occasion-festival.jpg'
+  'occasion-festival': '/images/occasion-festival.jpg',
+  'gallery-img-1': '/gallary/eating image.jpeg',
+  'gallery-img-2': '/gallary/hand-cup image.jpeg',
+  'gallery-img-3': '/gallary/style.jpeg',
+  'gallery-img-4': '/gallary/tri icecream with love.jpeg',
+  'gallery-img-5': '/images/occasion-birthday.jpg',
+  'gallery-img-6': '/images/occasion-wedding.jpg',
+  'gallery-img-7': '/images/occasion-anniversary.jpg',
+  'gallery-img-8': '/images/occasion-festival.jpg',
+  'gallery-img-9': '/images/occasion-houseparty.jpg',
+  'gallery-img-10': '/images/store-interior-br.jpg',
+  'gallery-img-11': '/images/sundae-deliciousness.png',
+  'gallery-img-12': '/images/occasion-corporate.jpg'
 };
 
 export async function GET(req: Request, { params }: { params: Promise<{ key: string }> }) {

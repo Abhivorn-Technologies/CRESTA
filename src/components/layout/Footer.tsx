@@ -11,9 +11,13 @@ export function Footer() {
     return null;
   }
 
+  const hideTrustBanner = pathname === "/gallery";
+
+
   return (
     <footer className="w-full print:hidden">
-      {/* Premium Trust Banner */}
+      {/* Premium Trust Banner — hidden on Gallery page */}
+      {!hideTrustBanner && (
       <div className="w-full bg-gradient-to-br from-white via-[#f8fafc] to-[#f1f5f9] border-y border-gray-200/60 relative overflow-hidden">
         {/* Decorative background blur */}
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-pink-100 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob"></div>
@@ -58,6 +62,9 @@ export function Footer() {
           </div>
         </div>
       </div>
+      )}
+
+
 
       {/* Bottom Section - Links & Info */}
       <div className="w-full bg-white text-[#101b4d] border-t border-gray-200">
@@ -98,7 +105,7 @@ export function Footer() {
               <Link href="/" className="hover:text-[#e6127d] transition-colors w-fit">Home</Link>
               <Link href="/products" className="hover:text-[#e6127d] transition-colors w-fit">Shop All</Link>
               <Link href="/about" className="hover:text-[#e6127d] transition-colors w-fit">About Us</Link>
-              <Link href="/delivery" className="hover:text-[#e6127d] transition-colors w-fit">Delivery Info</Link>
+              <Link href="/gallery" className="hover:text-[#e6127d] transition-colors w-fit">Gallery</Link>
             </div>
           </div>
 

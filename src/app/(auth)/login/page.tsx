@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Eye, EyeOff } from "lucide-react";
 
-type Role = "User" | "Seller" | "Admin" | "Driver";
+type Role = "User" | "Driver" | "Seller";
 
 export default function LoginPage() {
   const [role, setRole] = useState<Role>("User");
@@ -69,16 +69,16 @@ export default function LoginPage() {
 
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-4">
         <h1 className="text-3xl font-heading font-bold text-[#101b4d]">Welcome Back</h1>
-        <p className="text-gray-500 mt-2 text-sm">Sign in to continue to your {role} Dashboard</p>
+        <p className="text-gray-500 mt-2 text-sm">Sign in to continue to your {role} Portal</p>
       </motion.div>
 
-      {/* Role Selector Tabs */}
+      {/* Role Selector Tabs (User, Driver, Seller - Admin removed) */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex bg-gray-50 p-1.5 rounded-xl mb-5 relative shadow-inner overflow-x-auto whitespace-nowrap hide-scrollbar">
-        {["User", "Driver", "Seller", "Admin"].map((r) => (
+        {(["User", "Driver", "Seller"] as Role[]).map((r) => (
           <button
             key={r}
-            onClick={() => setRole(r as Role)}
-            className={`flex-1 min-w-[70px] py-2.5 px-2 text-sm font-bold rounded-lg transition-all relative z-10 ${
+            onClick={() => setRole(r)}
+            className={`flex-1 min-w-[80px] py-2.5 px-3 text-sm font-bold rounded-lg transition-all relative z-10 ${
               role === r ? "text-[#101b4d]" : "text-gray-400 hover:text-gray-600"
             }`}
           >
@@ -151,11 +151,11 @@ export default function LoginPage() {
           className="w-full bg-[#e6127d] text-white hover:bg-[#101b4d] hover:-translate-y-0.5 rounded-xl py-3 text-[15px] font-bold transition-all duration-300 shadow-[0_8px_20px_-6px_rgba(230,18,125,0.5)] hover:shadow-xl disabled:opacity-70 mt-2 flex items-center justify-center overflow-hidden relative group"
         >
           <div className="absolute inset-0 w-full h-full bg-white/20 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
-          <span className="relative z-10">{isLoading ? "Signing In..." : "Sign In To Dashboard"}</span>
+          <span className="relative z-10">{isLoading ? "Signing In..." : "Sign In To Portal"}</span>
         </motion.button>
       </form>
 
-      {role !== 'Admin' && role !== 'Driver' && (
+      {role === "User" && (
         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="mt-5 text-center text-sm font-medium text-gray-500">
           Don't have an account?{" "}
           <Link href="/signup" className="font-bold text-[#101b4d] hover:text-[#e6127d] transition-colors">

@@ -2,12 +2,11 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, CheckCircle2 } from "lucide-react";
 
 type Role = "User" | "Seller";
 
@@ -18,20 +17,21 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { setUser } = useAuth();
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
+    setSuccess("");
 
     try {
       const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password, role }), // Sending role to backend
+        body: JSON.stringify({ name, email, password, role }),
       });
 
       const data = await res.json();
@@ -40,13 +40,9 @@ export default function SignupPage() {
         throw new Error(data.error || "Signup failed");
       }
 
-      setUser(data.user);
-      
-      // Route based on role
-      if (role === "Seller") router.push("/seller/dashboard");
-      else router.push("/");
-      
-      router.refresh();
+      // Show success, then redirect to login after 1.5s
+      setSuccess("Account created! Redirecting to sign in...");
+      setTimeout(() => router.push("/login"), 1500);
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -96,6 +92,13 @@ export default function SignupPage() {
       {error && (
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="p-3 mb-6 bg-red-50 text-red-600 border border-red-100 rounded-lg text-sm text-center font-bold">
           {error}
+        </motion.div>
+      )}
+
+      {success && (
+        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="p-3 mb-6 bg-green-50 text-green-700 border border-green-200 rounded-lg text-sm text-center font-bold flex items-center justify-center gap-2">
+          <CheckCircle2 className="size-4 shrink-0" />
+          {success}
         </motion.div>
       )}
 
