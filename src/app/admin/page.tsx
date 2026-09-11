@@ -43,6 +43,7 @@ export default function AdminDashboardPage() {
 
     const onFocus = () => fetchDashboardData();
     window.addEventListener("focus", onFocus);
+    window.addEventListener("cresta:new-order", onFocus);
     window.addEventListener("visibilitychange", () => {
       if (document.visibilityState === 'visible') fetchDashboardData();
     });
@@ -52,6 +53,7 @@ export default function AdminDashboardPage() {
 
     return () => {
       window.removeEventListener("focus", onFocus);
+      window.removeEventListener("cresta:new-order", onFocus);
       window.removeEventListener("visibilitychange", onFocus);
       clearInterval(intervalId);
     };

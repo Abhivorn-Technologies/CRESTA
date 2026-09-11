@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { connectToDatabase } from "@/lib/mongodb";
 import Order from "@/models/Order";
 import { sendOrderPlacedWhatsApp } from "@/services/whatsapp.service";
+import { notifyAdminNewOrder } from "@/lib/notify-admin-order";
 
 const JWT_SECRET = process.env.JWT_SECRET || "fallback_secret_key_please_change";
 
@@ -48,6 +49,9 @@ export async function POST(req: NextRequest) {
       paymentStatus: "completed", // Simulating successful payment for now
       orderStatus: "processing",
     });
+
+    // Send real-time notification to admin dashboard
+    await notifyAdminNewOrder(order);
 
     // Send WhatsApp notification
     if (shippingAddress?.phone) {

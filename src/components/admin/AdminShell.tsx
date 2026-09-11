@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { AdminHeader } from "@/components/admin/AdminHeader";
+import { AdminOrderNotifications } from "@/components/admin/AdminOrderNotifications";
 import { Loader2 } from "lucide-react";
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
@@ -48,6 +49,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   // Authenticated Admin Dashboard Layout
   return (
     <div className="flex flex-col h-screen bg-[#f0f3fa]">
+      <AdminOrderNotifications />
       <AdminHeader />
       <div className="flex flex-1 min-h-0">
         <AdminSidebar />

@@ -15,7 +15,8 @@ import {
   LogOut, 
   Image as ImageIcon,
   Truck,
-  ExternalLink
+  ExternalLink,
+  Volume2
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
@@ -70,6 +71,23 @@ export function AdminHeader() {
       
       {/* Right Controls */}
       <div className="flex items-center gap-3 md:gap-5">
+        {/* Sound Alerts Test Button */}
+        <button
+          type="button"
+          onClick={() => {
+            try {
+              const audio = new Audio("/sounds/order-chime.wav");
+              audio.volume = 0.8;
+              audio.play().catch(() => {});
+            } catch {}
+          }}
+          className="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-[#e6127d] bg-pink-50 hover:bg-pink-100 px-3 py-2 rounded-xl border border-pink-200/60 transition-all cursor-pointer shadow-xs active:scale-95"
+          title="Click to test order notification sound and enable browser audio"
+        >
+          <Volume2 className="size-3.5 text-[#e6127d]" />
+          <span>Sound Alerts</span>
+        </button>
+
         {/* Quick View Public Website */}
         <Link 
           href="/" 

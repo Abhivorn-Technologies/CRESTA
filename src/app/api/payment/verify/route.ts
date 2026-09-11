@@ -3,6 +3,7 @@ import crypto from "crypto";
 import { connectToDatabase } from "@/lib/mongodb";
 import Order from "@/models/Order";
 import { sendOrderPlacedWhatsApp } from "@/services/whatsapp.service";
+import { notifyAdminNewOrder } from "@/lib/notify-admin-order";
 
 export async function POST(req: NextRequest) {
   try {
@@ -35,6 +36,9 @@ export async function POST(req: NextRequest) {
     order.razorpayPaymentId = razorpay_payment_id;
     order.razorpaySignature = razorpay_signature;
     await order.save();
+
+    // Send real-time notification to admin dashboard
+    await notifyAdminNewOrder(order);
 
     // Send WhatsApp notification
     if (order.shippingAddress?.phone) {

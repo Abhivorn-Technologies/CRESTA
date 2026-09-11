@@ -35,12 +35,14 @@ export default function OrdersPage() {
 
     const onFocus = () => fetchOrders();
     window.addEventListener("focus", onFocus);
+    window.addEventListener("cresta:new-order", onFocus);
     window.addEventListener("visibilitychange", () => {
       if (document.visibilityState === 'visible') fetchOrders();
     });
 
     return () => {
       window.removeEventListener("focus", onFocus);
+      window.removeEventListener("cresta:new-order", onFocus);
       window.removeEventListener("visibilitychange", onFocus);
     };
   }, []);

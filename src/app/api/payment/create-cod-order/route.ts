@@ -4,6 +4,7 @@ import { connectToDatabase } from "@/lib/mongodb";
 import Order from "@/models/Order";
 import crypto from "crypto";
 import { sendOrderPlacedWhatsApp } from "@/services/whatsapp.service";
+import { notifyAdminNewOrder } from "@/lib/notify-admin-order";
 
 const JWT_SECRET = process.env.JWT_SECRET || "fallback_secret_key_please_change";
 
@@ -64,6 +65,9 @@ export async function POST(req: NextRequest) {
       paymentStatus: "pending", // Will be marked as paid when the delivery agent collects cash
       orderStatus: "processing",
     });
+
+    // Send real-time notification to admin dashboard
+    await notifyAdminNewOrder(order);
 
     // Send WhatsApp notification
     if (shippingAddress?.phone) {
