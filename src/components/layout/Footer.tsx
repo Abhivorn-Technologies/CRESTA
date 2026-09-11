@@ -86,14 +86,23 @@ export function Footer() {
               Authorized distributor of premium Baskin Robbins ice cream. Delivering joy, celebration, and uncompromising quality straight to your door.
             </p>
             <div className="flex items-center gap-4 mt-2 text-[#101b4d]">
-              <Link href="#" className="flex h-9 w-9 items-center justify-center rounded-full bg-white border border-gray-200 hover:border-[#e6127d] hover:bg-[#e6127d] hover:text-white transition-colors shadow-sm">
+              <Link 
+                href="https://www.facebook.com/people/Cresta-Global-PVT-LTD/61592587134013/" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                aria-label="Facebook" 
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-white border border-gray-200 hover:border-[#e6127d] hover:bg-[#e6127d] hover:text-white transition-colors shadow-sm"
+              >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
               </Link>
-              <Link href="#" className="flex h-9 w-9 items-center justify-center rounded-full bg-white border border-gray-200 hover:border-[#e6127d] hover:bg-[#e6127d] hover:text-white transition-colors shadow-sm">
+              <Link 
+                href="https://www.instagram.com/crestaglobal/" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                aria-label="Instagram" 
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-white border border-gray-200 hover:border-[#e6127d] hover:bg-[#e6127d] hover:text-white transition-colors shadow-sm"
+              >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-              </Link>
-              <Link href="#" className="flex h-9 w-9 items-center justify-center rounded-full bg-white border border-gray-200 hover:border-[#e6127d] hover:bg-[#e6127d] hover:text-white transition-colors shadow-sm">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
               </Link>
             </div>
           </div>
@@ -123,18 +132,39 @@ export function Footer() {
           {/* Contact Us */}
           <div className="flex flex-col gap-6">
             <h3 className="font-heading font-semibold text-[#101b4d] text-lg">Contact Us</h3>
-            <div className="flex flex-col gap-5 text-sm font-medium text-gray-500">
+            <div className="flex flex-col gap-4 text-sm font-medium text-gray-500">
+              {/* Store Address */}
               <div className="flex items-start gap-3">
                 <MapPin className="size-5 shrink-0 text-[#f5a623] mt-0.5" />
-                <span className="group-hover:text-[#101b4d] transition-colors">Aparna Neo Mall, Nallagandla, Hyderabad</span>
+                <div className="flex flex-col">
+                  <span className="text-[11px] font-bold text-[#101b4d] uppercase tracking-wider">Store Location:</span>
+                  <span className="leading-snug text-gray-600">Aparna Neo Mall, Nallagandla, Hyderabad</span>
+                </div>
               </div>
-              <div className="flex items-center gap-3">
+
+              {/* Registered Address */}
+              <div className="flex items-start gap-3">
+                <MapPin className="size-5 shrink-0 text-[#e6127d] mt-0.5" />
+                <div className="flex flex-col">
+                  <span className="text-[11px] font-bold text-[#101b4d] uppercase tracking-wider">Registered Address:</span>
+                  <span className="leading-snug text-gray-600">1-93/3, Prabhath Nagar, Malakpet Colony, Hyderabad, Amberpet, Telangana, 500036 (near ICICI Bank)</span>
+                </div>
+              </div>
+
+              {/* Phone */}
+              <div className="flex items-center gap-3 pt-1">
                 <Phone className="size-5 shrink-0 text-[#f5a623]" />
-                <span className="hover:text-[#101b4d] transition-colors cursor-pointer">+91 9000199047</span>
+                <a href="tel:+919000199047" className="hover:text-[#e6127d] transition-colors">
+                  +91 9000199047
+                </a>
               </div>
+
+              {/* Email */}
               <div className="flex items-center gap-3">
                 <Mail className="size-5 shrink-0 text-[#f5a623]" />
-                <span className="hover:text-[#101b4d] transition-colors cursor-pointer">crestaglobalpvtltd@gmail.com</span>
+                <a href="mailto:crestaglobalpvtltd@gmail.com" className="hover:text-[#e6127d] transition-colors break-all">
+                  crestaglobalpvtltd@gmail.com
+                </a>
               </div>
             </div>
           </div>

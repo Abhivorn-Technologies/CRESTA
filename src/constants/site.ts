@@ -10,10 +10,10 @@ export const siteConfig = {
   phone: "+91 9000199047",
   email: "crestaglobalpvtltd@gmail.com",
   address: "Aparna Neo Mall, Nallagandla, Hyderabad",
+  registeredAddress: "1-93/3, Prabhath Nagar, Malakpet Colony, Hyderabad, Amberpet, Telangana, 500036 (near ICICI Bank)",
   social: {
-    facebook: "https://facebook.com",
-    instagram: "https://instagram.com",
-    twitter: "https://twitter.com",
+    facebook: "https://www.facebook.com/people/Cresta-Global-PVT-LTD/61592587134013/",
+    instagram: "https://www.instagram.com/crestaglobal/",
     linkedin: "https://linkedin.com",
   },
 } as const;
