@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ShoppingCart, Heart } from "lucide-react";
-import { Product } from "@/data/products";
+import { Product, mockProducts } from "@/data/products";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
 import { useAuth } from "@/context/AuthContext";
@@ -13,7 +13,7 @@ export const RelatedProducts = React.memo(function RelatedProducts({ currentProd
   const { cart, addToCart, setBuyNowItem, updateQuantity } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
   const { user } = useAuth();
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[]>(mockProducts);
 
   useEffect(() => {
     async function fetchProducts() {
@@ -21,7 +21,9 @@ export const RelatedProducts = React.memo(function RelatedProducts({ currentProd
         const res = await fetch('/api/products');
         if (res.ok) {
           const data = await res.json();
-          setProducts(data.products);
+          if (data.products && Array.isArray(data.products) && data.products.length > 0) {
+            setProducts(data.products);
+          }
         }
       } catch (err) {
         console.error("Failed to fetch products:", err);

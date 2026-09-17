@@ -1,5 +1,4 @@
 import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
 import { ProductHero } from "@/features/product/ProductHero";
 import dynamic from "next/dynamic";
 
@@ -9,32 +8,57 @@ import { ChevronRight } from "lucide-react";
 import { notFound } from "next/navigation";
 import { connectToDatabase } from "@/lib/mongodb";
 import ProductModel from "@/models/Product";
+import { mockProducts } from "@/data/products";
+
+export async function generateStaticParams() {
+  return mockProducts.map((product) => ({
+    id: product.name.toLowerCase().replace(/\s+/g, "-"),
+  }));
+}
 
 export default async function ProductDetailsPage({ params }: { params: Promise<{ id: string }> }) {
-  // Find product by slugified name or ID with forgiving matching
   const resolvedParams = await params;
   const decodedId = decodeURIComponent(resolvedParams.id);
   const normalizedParam = decodedId.toLowerCase().replace(/[\s-]/g, "");
   
-  await connectToDatabase();
+  // 1. Fast match against static/mock products (Instant 0ms response)
+  let product: any = mockProducts.find(p => 
+    (p.id && p.id.toLowerCase() === normalizedParam) || 
+    (p.name && p.name.toLowerCase().replace(/[\s-]/g, "") === normalizedParam) ||
+    (p.name && p.name.toLowerCase().replace(/\s+/g, "-") === decodedId.toLowerCase())
+  );
   
-  // Try finding by exact slug first
-  let productDoc = await ProductModel.findOne({ slug: decodedId.toLowerCase() });
-  
-  if (!productDoc) {
-    // Fallback: search by id or case-insensitive name
-    const allProducts = await ProductModel.find({});
-    productDoc = allProducts.find(p => 
-      p.id.toLowerCase() === normalizedParam || 
-      p.name.toLowerCase().replace(/[\s-]/g, "") === normalizedParam
-    ) || null;
+  // 2. Fallback to MongoDB for dynamic custom products
+  if (!product) {
+    try {
+      await connectToDatabase();
+      
+      const productDoc = await ProductModel.findOne({
+        $or: [
+          { slug: decodedId.toLowerCase() },
+          { id: decodedId },
+          { name: new RegExp(`^${decodedId.replace(/-/g, ' ')}$`, 'i') }
+        ]
+      }).lean();
+      
+      if (productDoc) {
+        product = JSON.parse(JSON.stringify(productDoc));
+      } else {
+        const allProducts = await ProductModel.find({}).lean();
+        const found = allProducts.find((p: any) => 
+          (p.id && p.id.toLowerCase() === normalizedParam) || 
+          (p.name && p.name.toLowerCase().replace(/[\s-]/g, "") === normalizedParam)
+        );
+        if (found) product = JSON.parse(JSON.stringify(found));
+      }
+    } catch (err) {
+      console.error("Database lookup error in product details:", err);
+    }
   }
 
-  if (!productDoc) {
+  if (!product) {
     notFound();
   }
-
-  const product = JSON.parse(JSON.stringify(productDoc));
   
   return (
     <main className="flex min-h-screen flex-col bg-white">
