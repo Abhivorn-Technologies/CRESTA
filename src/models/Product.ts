@@ -8,7 +8,7 @@ export interface IProduct extends Document {
   image: string;
   price: number;
   originalPrice?: number;
-  volume: string;
+  volume?: string;
   rating: number;
   reviewCount: number;
   inStock: boolean;
@@ -28,7 +28,7 @@ const ProductSchema = new Schema<IProduct>(
     image: { type: String, default: "" },
     price: { type: Number, required: true },
     originalPrice: { type: Number },
-    volume: { type: String, required: true },
+    volume: { type: String, default: "" },
     rating: { type: Number, default: 0 },
     reviewCount: { type: Number, default: 0 },
     inStock: { type: Boolean, default: true },
@@ -39,19 +39,30 @@ const ProductSchema = new Schema<IProduct>(
 );
 
 ProductSchema.pre("save", async function () {
-  const Setting = mongoose.model("Setting");
-  const settings = await Setting.findOne();
-  if (settings && settings.productConstraints) {
-    if (this.price < settings.productConstraints.minPrice) {
-      throw new Error(`Product price (₹${this.price}) cannot be less than the minimum allowed price (₹${settings.productConstraints.minPrice})`);
+  try {
+    const { Setting } = await import("@/models/Setting");
+    const settings = await Setting.findOne();
+    if (settings && settings.productConstraints) {
+      if (typeof settings.productConstraints.minPrice === "number" && this.price < settings.productConstraints.minPrice) {
+        throw new Error(`Product price (₹${this.price}) cannot be less than the minimum allowed price (₹${settings.productConstraints.minPrice})`);
+      }
+      if (typeof settings.productConstraints.maxPrice === "number" && this.price > settings.productConstraints.maxPrice) {
+        throw new Error(`Product price (₹${this.price}) cannot exceed the maximum allowed price (₹${settings.productConstraints.maxPrice})`);
+      }
     }
-    if (this.price > settings.productConstraints.maxPrice) {
-      throw new Error(`Product price (₹${this.price}) cannot exceed the maximum allowed price (₹${settings.productConstraints.maxPrice})`);
+  } catch (err: any) {
+    if (err?.message && err.message.includes("cannot")) {
+      throw err;
     }
+    // If settings model is not loaded or DB is initializing, don't crash product save
   }
 });
 
-const Product: Model<IProduct> =
-  mongoose.models.Product || mongoose.model<IProduct>("Product", ProductSchema);
+// Delete stale cached model in development/hot-reload to ensure updated schema takes effect
+if (mongoose.models && mongoose.models.Product) {
+  delete (mongoose.models as any).Product;
+}
+
+const Product: Model<IProduct> = mongoose.model<IProduct>("Product", ProductSchema);
 
 export default Product;

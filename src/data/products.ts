@@ -16,6 +16,7 @@ export interface Product {
   originalPrice: number;
   image: string;
   badges: string[];
+  description?: string;
 }
 
 export const mockProducts: Product[] = [

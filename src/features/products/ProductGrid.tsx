@@ -96,16 +96,27 @@ export const ProductGrid = React.memo(function ProductGrid({ products }: Product
             <h3 className="font-heading font-bold text-[#101b4d] text-lg leading-tight mb-1 group-hover:text-[#e6127d] transition-colors">
               {product.name}
             </h3>
-            <span className="text-gray-400 text-xs font-medium mb-5">
-              {product.volume}
-            </span>
+            {product.description ? (
+              <p className="text-gray-500 text-xs leading-relaxed mb-2 line-clamp-2">
+                {product.description}
+              </p>
+            ) : null}
+            {product.volume ? (
+              <span className="text-gray-400 text-xs font-medium mb-5">
+                {product.volume}
+              </span>
+            ) : (
+              <span className="text-transparent text-xs font-medium mb-5 select-none" aria-hidden="true">
+                &nbsp;
+              </span>
+            )}
 
             <div className="mt-auto flex flex-row justify-between items-center w-full pt-2">
               <div className="flex flex-col">
                 <span className="text-[#101b4d] font-bold text-lg">
                   ₹{product.price.toFixed(2)}
                 </span>
-                {product.originalPrice > product.price && (
+                {typeof product.originalPrice === "number" && product.originalPrice > product.price && (
                   <span className="text-gray-400 text-xs line-through font-medium">
                     ₹{product.originalPrice.toFixed(2)}
                   </span>

@@ -22,10 +22,10 @@ export async function POST(req: Request) {
     await connectToDatabase();
     const data = await req.json();
 
-    const { name, category, price, volume, image } = data;
+    const { name, category, price, volume, image, description } = data;
 
-    if (!name || !category || !price || !volume) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    if (!name || !category || price === undefined || price === null || price === "") {
+      return NextResponse.json({ error: "Name, Category, and Price are required fields" }, { status: 400 });
     }
 
     // Generate unique id and slug
@@ -37,10 +37,11 @@ export async function POST(req: Request) {
     const newProduct = new Product({
       id,
       slug,
-      name,
-      category,
+      name: String(name).trim(),
+      category: String(category).trim(),
       price: Number(price),
-      volume,
+      volume: volume ? String(volume).trim() : "",
+      description: description ? String(description).trim() : "",
       image: image || "", // base64 string
       inStock: true,
       rating: 5,
@@ -51,10 +52,10 @@ export async function POST(req: Request) {
     await newProduct.save();
 
     return NextResponse.json(newProduct, { status: 201 });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Admin Products API POST Error:", error);
     return NextResponse.json(
-      { error: "Failed to create product" },
+      { error: error?.message || "Failed to create product" },
       { status: 500 }
     );
   }

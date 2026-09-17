@@ -48,9 +48,9 @@ export const CartItem = React.memo(function CartItem({ product, quantity }: Cart
           
           <div className="flex items-center flex-wrap gap-2 mt-2">
             <span className="font-bold text-[#101b4d] text-base sm:text-lg">
-              ₹{(product.price * quantity).toFixed(2)}
+              ₹{((product.price ?? 0) * quantity).toFixed(2)}
             </span>
-            {product.originalPrice > product.price && (
+            {typeof product.originalPrice === "number" && product.originalPrice > product.price && (
               <>
                 <span className="text-gray-400 text-xs font-medium line-through">
                   ₹{(product.originalPrice * quantity).toFixed(2)}

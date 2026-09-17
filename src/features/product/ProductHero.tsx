@@ -92,29 +92,33 @@ export const ProductHero = React.memo(function ProductHero({ product }: { produc
 
         {/* Price */}
         <div className="flex items-baseline gap-3 mb-8">
-          <span className="font-heading text-3xl font-bold text-[#00113A]">₹{product.price.toFixed(2)}</span>
-          <span className="text-sm text-gray-400 line-through">₹{product.originalPrice.toFixed(2)}</span>
+          <span className="font-heading text-3xl font-bold text-[#00113A]">₹{(product.price ?? 0).toFixed(2)}</span>
+          {typeof product.originalPrice === "number" && product.originalPrice > product.price && (
+            <span className="text-sm text-gray-400 line-through">₹{product.originalPrice.toFixed(2)}</span>
+          )}
         </div>
 
         {/* Size Variant */}
-        <div className="flex flex-col gap-3 mb-8">
-          <span className="text-xs font-bold text-[#00113A]">Size Variant</span>
-          <div className="flex flex-wrap gap-3">
-            {[product.volume, '1 Litre (Bulk)'].map((size) => (
-              <button
-                key={size}
-                onClick={() => setActiveSize(size)}
-                className={`px-5 py-2.5 rounded text-xs font-bold transition-all border ${
-                  activeSize === size 
-                    ? 'border-[#00113A] bg-white text-[#00113A] ring-1 ring-[#00113A]'
-                    : 'border-gray-200 bg-white text-gray-500 hover:border-gray-300'
-                }`}
-              >
-                {size}
-              </button>
-            ))}
+        {[product.volume, '1 Litre (Bulk)'].filter(Boolean).length > 0 && (
+          <div className="flex flex-col gap-3 mb-8">
+            <span className="text-xs font-bold text-[#00113A]">Size Variant</span>
+            <div className="flex flex-wrap gap-3">
+              {[product.volume, '1 Litre (Bulk)'].filter(Boolean).map((size) => (
+                <button
+                  key={size}
+                  onClick={() => setActiveSize(size as string)}
+                  className={`px-5 py-2.5 rounded text-xs font-bold transition-all border ${
+                    activeSize === size 
+                      ? 'border-[#00113A] bg-white text-[#00113A] ring-1 ring-[#00113A]'
+                      : 'border-gray-200 bg-white text-gray-500 hover:border-gray-300'
+                  }`}
+                >
+                  {size}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Quantity & Actions */}
         <div className="flex flex-col gap-3 mb-10">

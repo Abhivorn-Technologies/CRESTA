@@ -16,7 +16,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     const updatedProduct = await Product.findByIdAndUpdate(
       id,
       { $set: body },
-      { returnDocument: 'after' }
+      { new: true, lean: true }
     );
 
     if (!updatedProduct) {

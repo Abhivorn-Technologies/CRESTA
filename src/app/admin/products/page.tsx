@@ -91,6 +91,7 @@ export default function ProductsPage() {
     category: "ice-cream",
     price: "",
     volume: "",
+    description: "",
     image: "",
   };
   const [formData, setFormData] = useState(initialFormState);
@@ -122,6 +123,7 @@ export default function ProductsPage() {
       category: product.category,
       price: product.price.toString(),
       volume: product.volume,
+      description: product.description || "",
       image: product.image || "",
     });
     setShowAddModal(true);
@@ -218,11 +220,12 @@ export default function ProductsPage() {
             message: 'Your product details have been successfully updated.'
           });
         } else {
+          const errData = await response.json().catch(() => ({}));
           setDialogConfig({
             open: true,
             type: 'error',
             title: 'Update Failed',
-            message: 'There was a problem updating the product. Please try again.'
+            message: errData.error || 'There was a problem updating the product. Please try again.'
           });
         }
       } else {
@@ -245,11 +248,12 @@ export default function ProductsPage() {
             message: 'The new product has been successfully added to your catalog.'
           });
         } else {
+          const errData = await response.json().catch(() => ({}));
           setDialogConfig({
             open: true,
             type: 'error',
             title: 'Add Failed',
-            message: 'There was a problem adding the product. Please try again.'
+            message: errData.error || 'There was a problem adding the product. Please try again.'
           });
         }
       }
@@ -466,15 +470,31 @@ export default function ProductsPage() {
 
                 {/* Volume */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-sm font-semibold text-[#101b4d]">Volume / Size <span className="text-[#e6127d]">*</span></label>
+                  <label className="text-sm font-semibold text-[#101b4d]">
+                    Volume / Size <span className="text-gray-400 text-xs font-normal">(Optional)</span>
+                  </label>
                   <input 
-                    required
                     type="text" 
                     value={formData.volume}
                     onChange={(e) => setFormData({...formData, volume: e.target.value})}
-                    placeholder="e.g., 500ml, 1L"
+                    placeholder="e.g., 500ml, 1L (Optional)"
                     className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-[#101b4d] focus:ring-1 focus:ring-[#101b4d] outline-none transition-all text-sm"
                   />
+                </div>
+
+                {/* Description */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-sm font-semibold text-[#101b4d]">
+                    Description <span className="text-gray-400 text-xs font-normal">(Optional)</span>
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={formData.description}
+                    onChange={(e) => setFormData({...formData, description: e.target.value})}
+                    placeholder="e.g., A rich, creamy chocolate sundae topped with hot fudge and whipped cream."
+                    className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-[#101b4d] focus:ring-1 focus:ring-[#101b4d] outline-none transition-all text-sm resize-none"
+                  />
+                  <p className="text-xs text-gray-400">Keep it short — 2 to 3 sentences max.</p>
                 </div>
               </div>
 

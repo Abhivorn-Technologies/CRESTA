@@ -86,7 +86,7 @@ export function Footer() {
               Authorized distributor of premium Baskin Robbins ice cream. Delivering joy, celebration, and uncompromising quality straight to your door.
             </p>
             <div className="flex items-center gap-4 mt-2 text-[#101b4d]">
-              <Link 
+              <a 
                 href="https://www.facebook.com/people/Cresta-Global-PVT-LTD/61592587134013/" 
                 target="_blank" 
                 rel="noopener noreferrer" 
@@ -94,16 +94,42 @@ export function Footer() {
                 className="flex h-9 w-9 items-center justify-center rounded-full bg-white border border-gray-200 hover:border-[#e6127d] hover:bg-[#e6127d] hover:text-white transition-colors shadow-sm"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
-              </Link>
-              <Link 
-                href="https://www.instagram.com/crestaglobal/" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                aria-label="Instagram" 
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-white border border-gray-200 hover:border-[#e6127d] hover:bg-[#e6127d] hover:text-white transition-colors shadow-sm"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-              </Link>
+              </a>
+              {/* Instagram 1 — Baskin Robbins Hyderabad */}
+              <div className="relative group/ig1">
+                <a
+                  href="https://www.instagram.com/baskin7806/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Instagram — Baskin Robbins Hyderabad"
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-white border border-gray-200 hover:border-[#e6127d] hover:bg-gradient-to-br hover:from-[#e6127d] hover:to-[#f59e0b] hover:text-white transition-all shadow-sm"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                </a>
+                {/* Tooltip */}
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1 bg-[#1a1a2e] text-white text-[11px] font-semibold rounded-lg whitespace-nowrap opacity-0 pointer-events-none group-hover/ig1:opacity-100 transition-opacity duration-200 shadow-lg">
+                  @baskin7806
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#1a1a2e]" />
+                </div>
+              </div>
+
+              {/* Instagram 2 — Cresta Global */}
+              <div className="relative group/ig2">
+                <a
+                  href="https://www.instagram.com/crestaglobal/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Instagram — Cresta Global"
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-white border border-gray-200 hover:border-[#e6127d] hover:bg-gradient-to-br hover:from-[#e6127d] hover:to-[#f59e0b] hover:text-white transition-all shadow-sm"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                </a>
+                {/* Tooltip */}
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1 bg-[#1a1a2e] text-white text-[11px] font-semibold rounded-lg whitespace-nowrap opacity-0 pointer-events-none group-hover/ig2:opacity-100 transition-opacity duration-200 shadow-lg">
+                  @crestaglobal
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#1a1a2e]" />
+                </div>
+              </div>
             </div>
           </div>
 

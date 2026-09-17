@@ -110,16 +110,22 @@ export const RelatedProducts = React.memo(function RelatedProducts({ currentProd
                   {item.category}
                 </span>
                 <h3 className="font-heading font-bold text-[#101b4d] text-lg leading-tight mb-1">{item.name}</h3>
-                <span className="text-gray-400 text-xs font-medium mb-4">
-                  {item.volume}
-                </span>
+                {item.volume ? (
+                  <span className="text-gray-400 text-xs font-medium mb-4">
+                    {item.volume}
+                  </span>
+                ) : (
+                  <span className="text-transparent text-xs font-medium mb-4 select-none" aria-hidden="true">
+                    &nbsp;
+                  </span>
+                )}
                 
                 <div className="mt-auto flex flex-row justify-between items-center w-full pt-2">
                   <div className="flex flex-col">
                     <span className="text-[#101b4d] font-bold text-lg">
-                      ₹{item.price.toFixed(2)}
+                      ₹{(item.price ?? 0).toFixed(2)}
                     </span>
-                    {item.originalPrice > item.price && (
+                    {typeof item.originalPrice === "number" && item.originalPrice > item.price && (
                       <span className="text-gray-400 text-xs line-through font-medium">
                         ₹{item.originalPrice.toFixed(2)}
                       </span>
