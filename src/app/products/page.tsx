@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { Navbar } from "@/components/layout/Navbar";
 import dynamic from "next/dynamic";
 
@@ -39,9 +40,12 @@ export default function ProductsPage() {
           </div>
           
           <div className="flex items-center gap-4">
-            <button className="px-6 py-2.5 rounded-full bg-[#e6127d] text-white text-sm font-bold shadow-lg shadow-[#e6127d]/20 hover:bg-[#c90d6b] transition-all hover:-translate-y-0.5">
+            <Link 
+              href="/products" 
+              className="px-6 py-2.5 rounded-full bg-[#e6127d] text-white text-sm font-bold shadow-lg shadow-[#e6127d]/20 hover:bg-[#c90d6b] transition-all hover:-translate-y-0.5"
+            >
               All Products
-            </button>
+            </Link>
             <Link 
               href="/wishlist" 
               className="flex items-center gap-2 px-6 py-2.5 rounded-full border-0 text-[#101b4d] text-sm font-bold bg-white hover:bg-gray-50 transition-all shadow-lg hover:-translate-y-0.5"
@@ -55,7 +59,9 @@ export default function ProductsPage() {
 
       {/* Main Content Area */}
       <div className="mx-auto max-w-[1440px] w-full px-6 lg:px-10 py-12 flex-1">
-        <ProductsLayout />
+        <Suspense fallback={null}>
+          <ProductsLayout />
+        </Suspense>
       </div>
     </main>
   );

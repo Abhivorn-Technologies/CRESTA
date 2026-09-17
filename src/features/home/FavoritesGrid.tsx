@@ -9,13 +9,14 @@ import { Heart, Plus } from "lucide-react";
 import { useWishlist } from "@/context/WishlistContext";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
+import { mockProducts } from "@/data/products";
 
 export const FavoritesGrid = React.memo(function FavoritesGrid() {
   const { toggleWishlist, isInWishlist } = useWishlist();
   const { cart, addToCart, setBuyNowItem, updateQuantity } = useCart();
   const { user } = useAuth();
-  const [products, setProducts] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState<any[]>(mockProducts.slice(0, 4));
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -26,8 +27,9 @@ export const FavoritesGrid = React.memo(function FavoritesGrid() {
         if (res.ok) {
           const data = await res.json();
           if (!mounted) return;
-          // Just take the first 4 products as featured favorites
-          setProducts(data.products.slice(0, 4));
+          if (data.products && Array.isArray(data.products) && data.products.length > 0) {
+            setProducts(data.products.slice(0, 4));
+          }
         }
       } catch (err) {
         console.error("Failed to fetch featured products:", err);

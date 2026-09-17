@@ -1,17 +1,30 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { ProductSidebar } from "./ProductSidebar";
 import { ProductGrid } from "./ProductGrid";
-import { ProductCategory, Product } from "@/data/products";
+import { ProductCategory, Product, mockProducts } from "@/data/products";
 
 export function ProductsLayout() {
+  const searchParams = useSearchParams();
+  const categoryParam = searchParams.get("category");
+
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<ProductCategory | "All Categories">("All Categories");
-  const [products, setProducts] = useState<Product[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState<ProductCategory | "All Categories">(
+    (categoryParam as ProductCategory) || "All Categories"
+  );
+  const [products, setProducts] = useState<Product[]>(mockProducts);
+  const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+
+  // Sync category when query param changes
+  useEffect(() => {
+    if (categoryParam) {
+      setSelectedCategory(categoryParam as ProductCategory);
+    }
+  }, [categoryParam]);
 
   // Reset page when search or category changes
   useEffect(() => {
@@ -24,7 +37,9 @@ export function ProductsLayout() {
         const res = await fetch(`/api/products?_cb=${Date.now()}`, { cache: "no-store" });
         if (res.ok) {
           const data = await res.json();
-          setProducts(data.products);
+          if (data.products && Array.isArray(data.products) && data.products.length > 0) {
+            setProducts(data.products);
+          }
         }
       } catch (err) {
         console.error("Failed to fetch products:", err);
@@ -65,21 +80,12 @@ export function ProductsLayout() {
     });
   }, [searchQuery, selectedCategory, products]);
 
-  const itemsPerPage = 6; // Or however many products per page
+  const itemsPerPage = 6;
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage) || 1;
   const currentItems = filteredProducts.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
-
-  if (isLoading) {
-    return (
-      <div className="w-full flex-1 py-32 flex flex-col items-center justify-center">
-        <div className="h-10 w-10 border-4 border-[#101b4d] border-t-transparent rounded-full animate-spin"></div>
-        <p className="mt-4 text-[#101b4d] font-semibold text-lg animate-pulse">Loading amazing flavors...</p>
-      </div>
-    );
-  }
 
   return (
     <div className="flex flex-col lg:flex-row gap-8 w-full items-stretch lg:items-start">

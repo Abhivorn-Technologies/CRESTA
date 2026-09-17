@@ -14,13 +14,24 @@ interface ProductSidebarProps {
 
 import React, { useState, useEffect } from "react";
 
+const DEFAULT_CATEGORIES = [
+  "All Categories",
+  "Ice Cream Tubs",
+  "Family Packs",
+  "Ice Cream Cakes",
+  "Scoops",
+  "Sundaes",
+  "Party Packs",
+  "Premium Collection"
+];
+
 export const ProductSidebar = React.memo(function ProductSidebar({
   searchQuery,
   setSearchQuery,
   selectedCategory,
   setSelectedCategory,
 }: ProductSidebarProps) {
-  const [categories, setCategories] = useState<string[]>(["All Categories"]);
+  const [categories, setCategories] = useState<string[]>(DEFAULT_CATEGORIES);
 
   useEffect(() => {
     async function fetchCategories() {
@@ -28,8 +39,10 @@ export const ProductSidebar = React.memo(function ProductSidebar({
         const res = await fetch('/api/categories');
         if (res.ok) {
           const data = await res.json();
-          const fetchedCategories = data.categories.map((c: any) => c.label);
-          setCategories(["All Categories", ...fetchedCategories]);
+          if (data.categories && Array.isArray(data.categories) && data.categories.length > 0) {
+            const fetchedCategories = data.categories.map((c: any) => c.label);
+            setCategories(["All Categories", ...fetchedCategories]);
+          }
         }
       } catch (err) {
         console.error("Failed to fetch categories:", err);

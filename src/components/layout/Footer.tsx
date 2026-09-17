@@ -170,7 +170,7 @@ export function Footer() {
 
               {/* Registered Address */}
               <div className="flex items-start gap-3">
-                <MapPin className="size-5 shrink-0 text-[#e6127d] mt-0.5" />
+                <MapPin className="size-5 shrink-0 text-[#f5a623] mt-0.5" />
                 <div className="flex flex-col">
                   <span className="text-[11px] font-bold text-[#101b4d] uppercase tracking-wider">Registered Address:</span>
                   <span className="leading-snug text-gray-600">1-93/3, Prabhath Nagar, Malakpet Colony, Hyderabad, Amberpet, Telangana, 500036 (near ICICI Bank)</span>

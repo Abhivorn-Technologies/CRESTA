@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 interface CategoryData {
   name: string;
@@ -142,8 +143,9 @@ export const ShopByRange = React.memo(function ShopByRange() {
               className="flex w-full"
             >
               {categories.map((category, i) => (
-                <div 
+                <Link 
                   key={category.name} 
+                  href={`/products?category=${encodeURIComponent(category.name)}`}
                   className="flex flex-col items-center gap-6 shrink-0 group cursor-pointer"
                   style={{ width: `${100 / itemsToShow}%` }}
                 >
@@ -164,7 +166,7 @@ export const ShopByRange = React.memo(function ShopByRange() {
                       {category.count}
                     </span>
                   </div>
-                </div>
+                </Link>
               ))}
             </motion.div>
           </div>
