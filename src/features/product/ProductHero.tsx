@@ -2,15 +2,15 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { Star, Minus, Plus, ShoppingCart, Snowflake, Truck, ChevronDown, ChevronUp } from "lucide-react";
+import { Star, Minus, Plus, Snowflake, Truck, ChevronDown, ChevronUp, ShieldAlert, Flame, Scale } from "lucide-react";
 import { Product } from "@/data/products";
 import { useCart } from "@/context/CartContext";
 
 export const ProductHero = React.memo(function ProductHero({ product }: { product: Product }) {
-  const { cart, addToCart, setBuyNowItem, updateQuantity } = useCart();
-  const [activeSize, setActiveSize] = useState("1 Litre");
+  const { cart, addToCart, updateQuantity } = useCart();
+  const [activeSize, setActiveSize] = useState(product.volume || "Regular");
   const [activeImage, setActiveImage] = useState(0);
-  const [isDescOpen, setIsDescOpen] = useState(true);
+  const [isDescOpen, setIsDescOpen] = useState(false);
   const [isNutriOpen, setIsNutriOpen] = useState(false);
 
   const images = [
@@ -20,7 +20,7 @@ export const ProductHero = React.memo(function ProductHero({ product }: { produc
     product.image
   ];
 
-
+  const hasNutrition = Boolean(product.nutrition);
 
   return (
     <div className="w-full max-w-[1152px] mx-auto flex flex-col lg:flex-row gap-8 lg:gap-16 items-start">
@@ -33,10 +33,18 @@ export const ProductHero = React.memo(function ProductHero({ product }: { produc
           
           {/* Badges */}
           <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
-            <div className="bg-[#1a1a1a] text-[#f5a623] text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full flex items-center gap-1">
-              <Star className="size-3 fill-[#f5a623]" /> Bestseller
-            </div>
-            <div className="bg-[#00113A] text-[#f5a623] text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full flex items-center gap-1">
+            {product.badges && product.badges.length > 0 ? (
+              product.badges.map((badge, idx) => (
+                <div key={idx} className="bg-[#1a1a1a] text-[#f5a623] text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full flex items-center gap-1 shadow-sm">
+                  <Star className="size-3 fill-[#f5a623]" /> {badge}
+                </div>
+              ))
+            ) : (
+              <div className="bg-[#1a1a1a] text-[#f5a623] text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full flex items-center gap-1">
+                <Star className="size-3 fill-[#f5a623]" /> Bestseller
+              </div>
+            )}
+            <div className="bg-[#00113A] text-[#f5a623] text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full flex items-center gap-1 shadow-sm">
               <Snowflake className="size-3" /> Cold Chain
             </div>
           </div>
@@ -47,7 +55,8 @@ export const ProductHero = React.memo(function ProductHero({ product }: { produc
             fill 
             className="object-contain p-8"
             priority
-           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" 
+          />
         </div>
 
         {/* Thumbnails */}
@@ -60,7 +69,7 @@ export const ProductHero = React.memo(function ProductHero({ product }: { produc
                 activeImage === index ? 'border-[#00113A] ring-1 ring-[#00113A]' : 'border-gray-200 hover:border-gray-300'
               }`}
             >
-              <Image src={img} alt={`Thumbnail ${index + 1}`} fill className="object-contain p-2"  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+              <Image src={img} alt={`Thumbnail ${index + 1}`} fill className="object-contain p-2" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
             </button>
           ))}
         </div>
@@ -72,12 +81,12 @@ export const ProductHero = React.memo(function ProductHero({ product }: { produc
         
         {/* Breadcrumbs & Title */}
         <span className="text-xs font-bold text-[#00113A] uppercase tracking-[0.1em] mb-3">{product.category}</span>
-        <h1 className="font-heading text-4xl md:text-[40px] font-bold text-[#00113A] leading-tight mb-4">
+        <h1 className="font-heading text-3xl md:text-[38px] font-bold text-[#00113A] leading-tight mb-4">
           {product.name}
         </h1>
         
         <p className="text-gray-600 text-sm leading-relaxed mb-4">
-          Experience the finest {product.name} crafted with premium ingredients. A signature Cresta Global delicacy designed for perfect indulgence.
+          {product.description || `Experience the finest ${product.name} crafted with premium ingredients. A signature Cresta Global delicacy designed for perfect indulgence.`}
         </p>
 
         {/* Rating */}
@@ -99,23 +108,16 @@ export const ProductHero = React.memo(function ProductHero({ product }: { produc
         </div>
 
         {/* Size Variant */}
-        {[product.volume, '1 Litre (Bulk)'].filter(Boolean).length > 0 && (
+        {product.volume && (
           <div className="flex flex-col gap-3 mb-8">
-            <span className="text-xs font-bold text-[#00113A]">Size Variant</span>
+            <span className="text-xs font-bold text-[#00113A]">Size / Portion</span>
             <div className="flex flex-wrap gap-3">
-              {[product.volume, '1 Litre (Bulk)'].filter(Boolean).map((size) => (
-                <button
-                  key={size}
-                  onClick={() => setActiveSize(size as string)}
-                  className={`px-5 py-2.5 rounded text-xs font-bold transition-all border ${
-                    activeSize === size 
-                      ? 'border-[#00113A] bg-white text-[#00113A] ring-1 ring-[#00113A]'
-                      : 'border-gray-200 bg-white text-gray-500 hover:border-gray-300'
-                  }`}
-                >
-                  {size}
-                </button>
-              ))}
+              <button
+                onClick={() => setActiveSize(product.volume)}
+                className="px-5 py-2.5 rounded text-xs font-bold transition-all border border-[#00113A] bg-white text-[#00113A] ring-1 ring-[#00113A]"
+              >
+                {product.volume}
+              </button>
             </div>
           </div>
         )}
@@ -149,7 +151,7 @@ export const ProductHero = React.memo(function ProductHero({ product }: { produc
         </div>
 
         {/* Feature Badges */}
-        <div className="flex flex-col sm:flex-row gap-6 mb-10 border-y border-gray-200 py-6">
+        <div className="flex flex-col sm:flex-row gap-6 mb-8 border-y border-gray-200 py-6">
           <div className="flex gap-3 flex-1">
             <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center shrink-0">
               <Snowflake className="size-4 text-[#00113A]" />
@@ -165,7 +167,7 @@ export const ProductHero = React.memo(function ProductHero({ product }: { produc
             </div>
             <div className="flex flex-col gap-1">
               <span className="text-xs font-bold text-[#00113A]">Delivery</span>
-              <span className="text-[10px] text-gray-500 leading-tight">Order by 4 PM for professional next day delivery.</span>
+              <span className="text-[10px] text-gray-500 leading-tight">Fast 10-15 min cold delivery direct to your location.</span>
             </div>
           </div>
         </div>
@@ -185,31 +187,60 @@ export const ProductHero = React.memo(function ProductHero({ product }: { produc
             {isDescOpen && (
               <div className="pb-4 text-xs text-gray-600 leading-relaxed flex flex-col gap-3">
                 <p>
-                  Perfect for catering events, high-end dessert menus, or simply treating yourself to a professional-grade dessert at home. Packaged in our proprietary insulated tubs to ensure perfect texture upon arrival.
+                  {product.description || "Crafted to perfection with rich flavors and premium toppings, delivering the authentic Baskin Robbins dessert experience."}
                 </p>
               </div>
             )}
           </div>
 
-          {/* Ingredients & Nutrition */}
-          <div className="flex flex-col border-t border-gray-200">
-            <button 
-              onClick={() => setIsNutriOpen(!isNutriOpen)}
-              className="py-4 flex justify-between items-center text-sm font-bold text-[#00113A] hover:text-[#e6127d] transition-colors"
-            >
-              Ingredients & Nutrition
-              {isNutriOpen ? <ChevronUp className="size-4" /> : <ChevronDown className="size-4" />}
-            </button>
-            {isNutriOpen && (
-              <div className="pb-4 text-xs text-gray-600 leading-relaxed">
-                Contains Milk, Soy, and Tree Nuts (Almonds). Made in a facility that also processes Peanuts and Wheat.
-                <br /><br />
-                Calories per serving: 280<br />
-                Total Fat: 16g<br />
-                Sugars: 24g
-              </div>
-            )}
-          </div>
+          {/* Ingredients & Nutrition (ONLY SHOWN FOR PRODUCTS WITH VERIFIED NUTRITION DATA) */}
+          {hasNutrition && product.nutrition && (
+            <div className="flex flex-col border-t border-gray-200">
+              <button 
+                onClick={() => setIsNutriOpen(!isNutriOpen)}
+                className="py-4 flex justify-between items-center text-sm font-bold text-[#00113A] hover:text-[#e6127d] transition-colors"
+              >
+                <div className="flex items-center gap-2">
+                  <span>Ingredients & Nutrition</span>
+                  <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    {product.nutrition.servingSize}
+                  </span>
+                </div>
+                {isNutriOpen ? <ChevronUp className="size-4" /> : <ChevronDown className="size-4" />}
+              </button>
+              {isNutriOpen && (
+                <div className="pb-5 pt-1 text-xs text-gray-600 leading-relaxed flex flex-col gap-3.5">
+                  {/* Nutrients Grid */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                    <div className="p-3 bg-[#f8f9fa] rounded-xl border border-gray-100 flex flex-col items-center text-center">
+                      <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Energy</span>
+                      <span className="font-heading font-bold text-[#101b4d] text-sm">{product.nutrition.calories}</span>
+                    </div>
+                    <div className="p-3 bg-[#f8f9fa] rounded-xl border border-gray-100 flex flex-col items-center text-center">
+                      <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Total Fat</span>
+                      <span className="font-heading font-bold text-[#101b4d] text-sm">{product.nutrition.fat}</span>
+                    </div>
+                    <div className="p-3 bg-[#f8f9fa] rounded-xl border border-gray-100 flex flex-col items-center text-center">
+                      <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Sugars</span>
+                      <span className="font-heading font-bold text-[#101b4d] text-sm">{product.nutrition.sugars}</span>
+                    </div>
+                    <div className="p-3 bg-[#f8f9fa] rounded-xl border border-gray-100 flex flex-col items-center text-center">
+                      <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Protein</span>
+                      <span className="font-heading font-bold text-[#101b4d] text-sm">{product.nutrition.protein}</span>
+                    </div>
+                  </div>
+
+                  {/* Allergen Info */}
+                  <div className="p-3 bg-amber-50/60 rounded-xl border border-amber-200/80 flex items-start gap-2.5 text-[11px] text-amber-900 leading-normal">
+                    <ShieldAlert className="size-4 text-amber-600 shrink-0 mt-0.5" />
+                    <div>
+                      <strong className="font-bold">Allergen Information:</strong> Contains {product.nutrition.allergens}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
 
         </div>
 

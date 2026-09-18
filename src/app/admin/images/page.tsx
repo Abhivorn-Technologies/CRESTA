@@ -60,12 +60,12 @@ const SITE_PAGES = [
     title: "Shop by Range Categories",
     description: "Images for the product categories shown on the Home Page",
     images: [
-      { key: "category-ice-cream-cakes", label: "Ice Cream Cakes", defaultUrl: "/images/Tiramisu_Cheesecake_414x.png (1).png", size: "400x400" },
-      { key: "category-ice-cream-tubs", label: "Ice Cream Tubs", defaultUrl: "/images/image 5.png", size: "400x400" },
-      { key: "category-party-packs", label: "Party Packs", defaultUrl: "/images/BEVERAGE_95b0dcd1-b1.png", size: "400x400" },
+      { key: "category-ice-cream-cakes", label: "Ice Cream Cakes", defaultUrl: "/images/category-ice-cream-cakes.jpg", size: "400x400" },
+      { key: "category-ice-cream-tubs", label: "Ice Cream Tubs", defaultUrl: "/images/category-ice-cream-tubs.jpg", size: "400x400" },
+      { key: "category-party-packs", label: "Party Packs", defaultUrl: "/images/category-party-packs.jpg", size: "400x400" },
       { key: "category-premium-collection", label: "Premium Collection", defaultUrl: "/images/paleta-strawberry.png", size: "400x400" },
       { key: "category-scoops", label: "Scoops", defaultUrl: "/images/SCOOPS_d9897fbb-eccc.png", size: "400x400" },
-      { key: "category-sundaes", label: "Sundaes", defaultUrl: "/images/sundae-deliciousness.png", size: "400x400" },
+      { key: "category-sundaes", label: "Sundaes", defaultUrl: "/menu-items/choco-lava-cake.jpeg", size: "400x400" },
     ]
   }
 ];

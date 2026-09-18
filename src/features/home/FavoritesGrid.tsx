@@ -76,15 +76,16 @@ export const FavoritesGrid = React.memo(function FavoritesGrid() {
         {/* Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {products.map((product, i) => {
-            const isWished = isInWishlist(product.id);
+            const productId = product.id || product._id || `fav-product-${i}`;
+            const isWished = isInWishlist(productId);
             
             return (
               <motion.div
+                key={productId}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                key={product._id}
                 className="relative group bg-white rounded-2xl border border-gray-100 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] transition-all duration-300 overflow-hidden flex flex-col p-5"
               >
                 {/* Badges */}
@@ -92,7 +93,7 @@ export const FavoritesGrid = React.memo(function FavoritesGrid() {
                   <span className="text-[8px] font-bold tracking-wider uppercase px-2 py-1 rounded-full shadow-sm bg-[#fdeef6] text-[#e6127d]">
                     BEST SELLER
                   </span>
-                  {!product.inStock && (
+                  {product.inStock === false && (
                     <span className="text-[8px] font-bold tracking-wider uppercase px-2 py-1 rounded-full text-white shadow-sm bg-gray-500">
                       SOLD OUT
                     </span>
@@ -104,7 +105,7 @@ export const FavoritesGrid = React.memo(function FavoritesGrid() {
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    toggleWishlist(product._id);
+                    toggleWishlist(productId);
                   }}
                   className={`absolute top-5 right-5 z-10 hover:text-[#e6127d] transition-colors bg-white rounded-full p-1.5 shadow-sm border border-gray-50 ${
                     isWished ? 'text-[#e6127d]' : 'text-gray-300'
@@ -162,13 +163,13 @@ export const FavoritesGrid = React.memo(function FavoritesGrid() {
                   
                   <div className="w-[84px]">
                     {(() => {
-                      const cartItem = cart.find(item => item.product.id === product._id);
+                      const cartItem = cart.find(item => item.product.id === productId);
                       return cartItem ? (
                         <div className="w-full h-8 flex items-center justify-between rounded-lg bg-[#e6127d] text-white shadow-sm overflow-hidden" onClick={(e) => e.preventDefault()}>
                           <button 
                             onClick={(e) => {
                               e.preventDefault();
-                              updateQuantity(product._id, cartItem.quantity - 1);
+                              updateQuantity(productId, cartItem.quantity - 1);
                             }}
                             className="w-7 h-full flex items-center justify-center hover:bg-white/20 transition-colors font-bold text-sm"
                           >
@@ -178,7 +179,7 @@ export const FavoritesGrid = React.memo(function FavoritesGrid() {
                           <button 
                             onClick={(e) => {
                               e.preventDefault();
-                              updateQuantity(product._id, cartItem.quantity + 1);
+                              updateQuantity(productId, cartItem.quantity + 1);
                             }}
                             className="w-7 h-full flex items-center justify-center hover:bg-white/20 transition-colors font-bold text-sm"
                           >
@@ -190,7 +191,7 @@ export const FavoritesGrid = React.memo(function FavoritesGrid() {
                           onClick={(e) => {
                             e.preventDefault();
                             addToCart({
-                              id: product._id,
+                              id: productId,
                               name: product.name,
                               price: product.price,
                               originalPrice: product.originalPrice || product.price,
