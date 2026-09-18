@@ -55,6 +55,22 @@ export default function ProductsPage() {
     };
   }, []);
 
+  const notifyProductSync = (product?: any) => {
+    try {
+      if (typeof window !== "undefined") {
+        localStorage.setItem("cresta_products_last_update", Date.now().toString());
+        window.dispatchEvent(new CustomEvent("cresta_products_update", { detail: product }));
+        if ("BroadcastChannel" in window) {
+          const bc = new BroadcastChannel("products_sync");
+          bc.postMessage({ type: "PRODUCT_UPDATED", product, timestamp: Date.now() });
+          bc.close();
+        }
+      }
+    } catch (e) {
+      console.error("Sync notification error:", e);
+    }
+  };
+
   const toggleStockStatus = async (productId: string, currentStatus: boolean) => {
     try {
       const response = await fetch(`/api/admin/products/${productId}`, {
@@ -64,7 +80,8 @@ export default function ProductsPage() {
       });
       if (response.ok) {
         const updatedProduct = await response.json();
-        setProducts(products.map(p => p._id === productId ? updatedProduct : p));
+        setProducts(products.map(p => (p._id === productId || p.id === productId) ? updatedProduct : p));
+        notifyProductSync(updatedProduct);
       }
     } catch (error) {
       console.error("Failed to update product stock status", error);
@@ -110,6 +127,20 @@ export default function ProductsPage() {
     productId: null,
   });
 
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch(`/api/admin/products?_cb=${Date.now()}`, { cache: "no-store" });
+      if (response.ok) {
+        const data = await response.json();
+        setProducts(data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch products:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const openAddModal = () => {
     setEditingId(null);
     setFormData(initialFormState);
@@ -117,12 +148,13 @@ export default function ProductsPage() {
   };
 
   const openEditModal = (product: any) => {
-    setEditingId(product._id);
+    const idToEdit = product._id || product.id;
+    setEditingId(idToEdit);
     setFormData({
-      name: product.name,
-      category: product.category,
-      price: product.price.toString(),
-      volume: product.volume,
+      name: product.name || "",
+      category: product.category || "ice-cream",
+      price: product.price ? product.price.toString() : "",
+      volume: product.volume || "",
       description: product.description || "",
       image: product.image || "",
     });
@@ -144,13 +176,15 @@ export default function ProductsPage() {
         method: "DELETE",
       });
       if (response.ok) {
-        setProducts(products.filter(p => p._id !== productId));
+        setProducts(prev => prev.filter(p => p._id !== productId && p.id !== productId));
         setDialogConfig({
           open: true,
           type: 'success',
           title: 'Product Deleted',
           message: 'The product has been successfully removed from your catalog.'
         });
+        notifyProductSync({ _id: productId, id: productId, deleted: true });
+        fetchProducts();
       } else {
         setDialogConfig({
           open: true,
@@ -173,18 +207,44 @@ export default function ProductsPage() {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) {
+      if (file.size > 10 * 1024 * 1024) {
         setDialogConfig({
           open: true,
           type: 'error',
           title: 'File Too Large',
-          message: 'The selected image exceeds the maximum size of 5MB. Please choose a smaller file.'
+          message: 'The selected image exceeds the maximum size of 10MB. Please choose a smaller file.'
         });
         return;
       }
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData({ ...formData, image: reader.result as string });
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const maxDim = 1200;
+          let width = img.width;
+          let height = img.height;
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, width, height);
+            const compressed = canvas.toDataURL("image/webp", 0.88);
+            setFormData(prev => ({ ...prev, image: compressed }));
+          } else {
+            setFormData(prev => ({ ...prev, image: event.target?.result as string }));
+          }
+        };
+        img.src = event.target?.result as string;
       };
       reader.readAsDataURL(file);
     }
@@ -210,7 +270,7 @@ export default function ProductsPage() {
 
         if (response.ok) {
           const updatedProduct = await response.json();
-          setProducts(products.map(p => p._id === editingId ? updatedProduct : p));
+          setProducts(prev => prev.map(p => (p._id === editingId || p.id === editingId) ? updatedProduct : p));
           setShowAddModal(false);
           setFormData(initialFormState);
           setDialogConfig({
@@ -219,6 +279,8 @@ export default function ProductsPage() {
             title: 'Product Updated',
             message: 'Your product details have been successfully updated.'
           });
+          notifyProductSync(updatedProduct);
+          fetchProducts();
         } else {
           const errData = await response.json().catch(() => ({}));
           setDialogConfig({
@@ -238,7 +300,7 @@ export default function ProductsPage() {
 
         if (response.ok) {
           const newProduct = await response.json();
-          setProducts([newProduct, ...products]);
+          setProducts(prev => [newProduct, ...prev]);
           setShowAddModal(false);
           setFormData(initialFormState);
           setDialogConfig({
@@ -247,6 +309,8 @@ export default function ProductsPage() {
             title: 'Product Added',
             message: 'The new product has been successfully added to your catalog.'
           });
+          notifyProductSync(newProduct);
+          fetchProducts();
         } else {
           const errData = await response.json().catch(() => ({}));
           setDialogConfig({
@@ -259,6 +323,12 @@ export default function ProductsPage() {
       }
     } catch (error) {
       console.error("Failed to save product", error);
+      setDialogConfig({
+        open: true,
+        type: 'error',
+        title: 'Network Error',
+        message: 'Could not connect to the server. Please check your network and try again.'
+      });
     } finally {
       setIsSubmitting(false);
     }

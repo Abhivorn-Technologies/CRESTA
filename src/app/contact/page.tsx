@@ -129,7 +129,7 @@ ${formData.message}`;
           <div className="relative h-[600px] rounded-3xl overflow-hidden shadow-lg border border-gray-100 group">
             {/* Google Maps Embed */}
             <iframe 
-              src="https://maps.google.com/maps?q=17.4665816,78.3099937&t=&z=17&ie=UTF8&iwloc=&output=embed" 
+              src="https://maps.google.com/maps?q=17.4668428,78.3103662&t=&z=17&ie=UTF8&iwloc=&output=embed" 
               width="100%" 
               height="100%" 
               style={{ border: 0 }} 
@@ -174,7 +174,7 @@ ${formData.message}`;
               </div>
 
               <a 
-                href="https://www.google.com/maps?q=17.4665816,78.3099937&z=17&hl=en" 
+                href="https://maps.google.com/maps?q=17.4668428%2C78.3103662&z=17&hl=en" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="w-full bg-[#00113A] hover:bg-[#1a2b7c] text-white font-bold py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg text-sm uppercase tracking-wider"

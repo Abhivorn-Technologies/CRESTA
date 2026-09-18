@@ -1,5 +1,14 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
 
+export interface INutrition {
+  servingSize: string;
+  calories: string;
+  fat: string;
+  sugars: string;
+  protein: string;
+  allergens: string;
+}
+
 export interface IProduct extends Document {
   id: string;
   slug: string;
@@ -14,6 +23,7 @@ export interface IProduct extends Document {
   inStock: boolean;
   badges: string[];
   description?: string;
+  nutrition?: INutrition;
 }
 
 const ProductSchema = new Schema<IProduct>(
@@ -34,6 +44,7 @@ const ProductSchema = new Schema<IProduct>(
     inStock: { type: Boolean, default: true },
     badges: { type: [String], default: [] },
     description: { type: String },
+    nutrition: { type: Schema.Types.Mixed, default: null },
   },
   { timestamps: true }
 );

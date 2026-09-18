@@ -56,6 +56,7 @@ export const ProductHero = React.memo(function ProductHero({ product }: { produc
             className="object-contain p-8"
             priority
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" 
+            unoptimized={Boolean(images[activeImage] && (images[activeImage].startsWith('data:') || images[activeImage].startsWith('http')))}
           />
         </div>
 
@@ -69,7 +70,14 @@ export const ProductHero = React.memo(function ProductHero({ product }: { produc
                 activeImage === index ? 'border-[#00113A] ring-1 ring-[#00113A]' : 'border-gray-200 hover:border-gray-300'
               }`}
             >
-              <Image src={img} alt={`Thumbnail ${index + 1}`} fill className="object-contain p-2" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+              <Image 
+                src={img} 
+                alt={`Thumbnail ${index + 1}`} 
+                fill 
+                className="object-contain p-2" 
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" 
+                unoptimized={Boolean(img && (img.startsWith('data:') || img.startsWith('http')))}
+              />
             </button>
           ))}
         </div>

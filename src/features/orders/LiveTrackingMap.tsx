@@ -16,7 +16,7 @@ const driverIcon = L.divIcon({ html: driverIconHtml, className: "", iconSize: [3
 const destIcon = L.divIcon({ html: destIconHtml, className: "", iconSize: [32, 32], iconAnchor: [16, 32] });
 const storeIcon = L.divIcon({ html: storeIconHtml, className: "", iconSize: [32, 32], iconAnchor: [16, 32] });
 
-const STORE_LOC = { lat: 17.4665816, lng: 78.3099937 };
+const STORE_LOC = { lat: 17.4668428, lng: 78.3103662 };
 
 // Component to dynamically fit bounds
 function MapUpdater({ driverLoc, destLoc }: { driverLoc: any, destLoc: any }) {

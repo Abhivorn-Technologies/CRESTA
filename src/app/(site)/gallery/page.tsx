@@ -218,126 +218,88 @@ function Lightbox({ item, total, onClose, onPrev, onNext }: { item: MediaItem; t
   );
 }
 
-// ─── Video Card ───────────────────────────────────────────────────────────────
-function VideoCard({ video, index, onOpen }: { video: typeof VIDEOS[number]; index: number; onOpen: (i: number) => void }) {
-  const [hovered, setHovered] = useState(false);
-  const ref = useRef<HTMLVideoElement>(null);
-  return (
-    <motion.div initial={{ opacity: 0, scale: 0.96 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, margin: "-30px" }} transition={{ duration: 0.45, delay: (index % 4) * 0.07 }} onClick={() => onOpen(index)} onMouseEnter={() => { setHovered(true); ref.current?.play().catch(() => {}); }} onMouseLeave={() => { setHovered(false); if (ref.current) { ref.current.pause(); ref.current.currentTime = 0; } }} className="relative overflow-hidden rounded-2xl cursor-pointer group bg-black aspect-video">
-      <video ref={ref} src={video.src} muted loop playsInline preload="metadata" className={`w-full h-full object-cover transition-all duration-500 ${hovered ? "scale-105 opacity-100" : "opacity-70"}`} />
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className={`w-16 h-16 rounded-full border-2 flex items-center justify-center transition-all duration-300 ${hovered ? "bg-[#e6127d] border-[#e6127d] scale-110 shadow-[0_0_32px_rgba(230,18,125,0.7)]" : "bg-white/10 border-white/40 backdrop-blur-md"}`}>
-          <Play className="size-7 text-white fill-white ml-1" />
-        </div>
-      </div>
-      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent p-4">
-        <div className="flex items-center gap-2 mb-1"><Film className="size-3.5 text-[#e6127d]" /><span className="text-[#e6127d] text-[10px] font-bold uppercase tracking-widest">Video</span></div>
-        <p className="text-white font-bold text-[15px] leading-tight">{video.title}</p>
-        <p className="text-white/60 text-xs mt-0.5">{video.caption}</p>
-      </div>
-      <div className={`absolute inset-0 rounded-2xl border-2 transition-colors duration-300 ${hovered ? "border-[#e6127d]/60" : "border-transparent"}`} />
-    </motion.div>
-  );
-}
-
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function GalleryPage() {
-  const [tab, setTab] = useState<"images" | "videos">("images");
   const [lightbox, setLightbox] = useState<MediaItem | null>(null);
   const [itemsImages, setItemsImages] = useState<any[]>(IMAGES);
-  const [itemsVideos, setItemsVideos] = useState<any[]>(VIDEOS);
 
   const loadGallery = useCallback(() => {
     fetch(`/api/gallery?_cb=${Date.now()}`, { cache: "no-store" })
       .then(res => res.json())
       .then(data => {
-        if (data.images?.length > 0) setItemsImages(data.images.map((img: any, i: number) => ({ id: img._id || i + 1, src: img.src, title: img.title, caption: img.caption || "" })));
-        if (data.videos?.length > 0) setItemsVideos(data.videos.map((vid: any, i: number) => ({ id: vid._id || i + 1, src: vid.src, title: vid.title, caption: vid.caption || "" })));
+        if (data.images?.length > 0) {
+          setItemsImages(data.images.map((img: any, i: number) => ({
+            id: img._id || i + 1,
+            src: img.src,
+            title: img.title,
+            caption: img.caption || ""
+          })));
+        }
       })
       .catch(err => console.error("Failed to load gallery items", err));
   }, []);
 
-  useEffect(() => { loadGallery(); window.addEventListener("focus", loadGallery); return () => window.removeEventListener("focus", loadGallery); }, [loadGallery]);
+  useEffect(() => {
+    loadGallery();
+    window.addEventListener("focus", loadGallery);
+    return () => window.removeEventListener("focus", loadGallery);
+  }, [loadGallery]);
 
-  const openImage = useCallback((i: number) => { const img = itemsImages[i]; if (!img) return; setLightbox({ type: "image", src: img.src, title: img.title, caption: img.caption, index: i }); }, [itemsImages]);
-  const openVideo = useCallback((i: number) => { const vid = itemsVideos[i]; if (!vid) return; setLightbox({ type: "video", src: vid.src, title: vid.title, caption: vid.caption, index: i }); }, [itemsVideos]);
+  const openImage = useCallback((i: number) => {
+    const img = itemsImages[i];
+    if (!img) return;
+    setLightbox({ type: "image", src: img.src, title: img.title, caption: img.caption, index: i });
+  }, [itemsImages]);
+
   const close = useCallback(() => setLightbox(null), []);
 
-  const prev = useCallback(() => { if (!lightbox) return; const items = lightbox.type === "image" ? itemsImages : itemsVideos; const ni = (lightbox.index - 1 + items.length) % items.length; const it = items[ni]; setLightbox({ type: lightbox.type, src: it.src, title: it.title, caption: it.caption, index: ni }); }, [lightbox, itemsImages, itemsVideos]);
-  const next = useCallback(() => { if (!lightbox) return; const items = lightbox.type === "image" ? itemsImages : itemsVideos; const ni = (lightbox.index + 1) % items.length; const it = items[ni]; setLightbox({ type: lightbox.type, src: it.src, title: it.title, caption: it.caption, index: ni }); }, [lightbox, itemsImages, itemsVideos]);
+  const prev = useCallback(() => {
+    if (!lightbox) return;
+    const ni = (lightbox.index - 1 + itemsImages.length) % itemsImages.length;
+    const it = itemsImages[ni];
+    setLightbox({ type: "image", src: it.src, title: it.title, caption: it.caption, index: ni });
+  }, [lightbox, itemsImages]);
 
-  useEffect(() => { document.body.style.overflow = lightbox ? "hidden" : ""; return () => { document.body.style.overflow = ""; }; }, [lightbox]);
+  const next = useCallback(() => {
+    if (!lightbox) return;
+    const ni = (lightbox.index + 1) % itemsImages.length;
+    const it = itemsImages[ni];
+    setLightbox({ type: "image", src: it.src, title: it.title, caption: it.caption, index: ni });
+  }, [lightbox, itemsImages]);
+
+  useEffect(() => {
+    document.body.style.overflow = lightbox ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [lightbox]);
 
   return (
     <div className="min-h-screen bg-[#faf8f9]">
 
       {/* Hero header */}
-      <section className="relative pt-28 pb-10 text-center overflow-hidden">
+      <section className="relative pt-28 pb-8 text-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-[#fce7f3] via-[#fef6fb] to-[#faf8f9]" />
         <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] h-[420px] bg-[#e6127d]/10 rounded-full blur-[90px]" />
         <div className="relative z-10 max-w-3xl mx-auto px-6">
           <motion.span initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#e6127d]/25 text-[#e6127d] text-xs font-semibold uppercase tracking-widest shadow-sm mb-6">
-            <Camera className="size-3.5" /> Visual Showcase
+            <Camera className="size-3.5" /> Photo Showcase
           </motion.span>
           <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 }} className="text-5xl md:text-6xl font-extrabold text-[#1a1a2e] leading-tight mb-4">
             Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#e6127d] to-[#f472b6]">Gallery</span>
           </motion.h1>
           <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="text-[#6b7280] text-lg leading-relaxed max-w-xl mx-auto">
-            Explore moments of joy — flavours, celebrations, and the smiles that make every scoop worthwhile.
+            Explore moments of joy — signature creations, flavours, and sweet celebrations that make every scoop special.
           </motion.p>
-          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.22 }} className="flex justify-center mt-8">
-            <div className="inline-flex bg-white rounded-2xl p-1.5 shadow-lg border border-gray-100 gap-1">
-              {(["images", "videos"] as const).map((t) => (
-                <button key={t} onClick={() => setTab(t)} className={`relative flex items-center gap-2.5 px-7 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 ${tab === t ? "text-white" : "text-gray-400 hover:text-[#e6127d]"}`}>
-                  {tab === t && <motion.div layoutId="galleryTab" className="absolute inset-0 bg-gradient-to-r from-[#e6127d] to-[#f472b6] rounded-xl shadow-md" transition={{ type: "spring", bounce: 0.22, duration: 0.5 }} />}
-                  <span className="relative z-10">{t === "images" ? <Camera className="size-4" /> : <Film className="size-4" />}</span>
-                  <span className="relative z-10 capitalize">{t}</span>
-                  <span className={`relative z-10 px-2 py-0.5 rounded-full text-xs font-bold ${tab === t ? "bg-white/25 text-white" : "bg-gray-100 text-gray-400"}`}>{t === "images" ? itemsImages.length : itemsVideos.length}</span>
-                </button>
-              ))}
-            </div>
-          </motion.div>
         </div>
       </section>
 
-      {/* ── Cinematic Slider (Images Tab) ── */}
-      <AnimatePresence mode="wait">
-        {tab === "images" && (
-          <motion.section
-            key="cinematic-section"
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.4 }}
-            className="max-w-6xl mx-auto px-4 md:px-6 pb-24"
-          >
-            <CinematicSlider images={itemsImages} onOpen={(i) => openImage(i)} />
-          </motion.section>
-        )}
-      </AnimatePresence>
+      {/* ── Cinematic Slider ── */}
+      <section className="max-w-6xl mx-auto px-4 md:px-6 pb-28">
+        <CinematicSlider images={itemsImages} onOpen={(i) => openImage(i)} />
+      </section>
 
-      {/* ── Videos Grid (Videos Tab) ── */}
-      <AnimatePresence mode="wait">
-        {tab === "videos" && (
-          <motion.section
-            key="videos-section"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.4 }}
-            className="max-w-7xl mx-auto px-4 md:px-6 pb-28"
-          >
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
-              {itemsVideos.map((vid, i) => (
-                <VideoCard key={vid.id} video={vid} index={i} onOpen={openVideo} />
-              ))}
-            </div>
-          </motion.section>
-        )}
-      </AnimatePresence>
-
+      {/* Lightbox Modal */}
       <AnimatePresence>
-        {lightbox && <Lightbox item={lightbox} total={lightbox.type === "image" ? itemsImages.length : itemsVideos.length} onClose={close} onPrev={prev} onNext={next} />}
+        {lightbox && <Lightbox item={lightbox} total={itemsImages.length} onClose={close} onPrev={prev} onNext={next} />}
       </AnimatePresence>
     </div>
   );

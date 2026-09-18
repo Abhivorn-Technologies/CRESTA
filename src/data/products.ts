@@ -31,7 +31,7 @@ export interface Product {
 }
 
 export const mockProducts: Product[] = [
-  // --- 5 PRODUCTS WITH VERIFIED NUTRITION DATA ---
+  // --- 5 SPECIFIED PRODUCTS WITH EXACT DESCRIPTIONS, PRICES & NUTRIENTS ---
   {
     id: "p-nutty-professor",
     name: "Nutty Professor",
@@ -128,7 +128,7 @@ export const mockProducts: Product[] = [
     }
   },
 
-  // --- OTHER MENU DESSERTS & CREATIONS (NO NUTRITION DISPLAY) ---
+  // --- OTHER MENU CARD DESSERTS & CREATIONS (NO NUTRITION DISPLAY) ---
   {
     id: "p-mississippi-mud-croissant",
     name: "Mississippi Mud - Croissant Cone Sundae",
@@ -175,14 +175,14 @@ export const mockProducts: Product[] = [
   },
   {
     id: "p-lotus-biscoff-cheesecake",
-    name: "Lotus Biscoff - Cheesecake Dessert",
+    name: "Lotus Biscoff® - Cheesecake Dessert",
     category: "Ice Cream Cakes",
     volume: "300ml",
     price: 300.00,
     originalPrice: 380.00,
     image: "/menu-items/biscoff-cheesecake.jpeg",
     badges: ["CHEF SPECIAL"],
-    description: "Baked Cheesecake topped with Biscoff ice cream, caramel sauce & whipped cream."
+    description: "Baked Cheesecake topped with Biscoff® ice cream, caramel sauce & whipped cream."
   },
   {
     id: "p-iranian-pista-kulfi",
@@ -207,6 +207,17 @@ export const mockProducts: Product[] = [
     description: "Irresistible Gold Medal Ribbon ice cream crowned with chocolate sauce, Ferrero Rocher crumble, whipped cream and a cherry on top."
   },
   {
+    id: "p-vanilla-mango-cheesecake",
+    name: "Vanilla with Mango Sauce - Cheesecake Dessert",
+    category: "Ice Cream Cakes",
+    volume: "300ml",
+    price: 300.00,
+    originalPrice: 380.00,
+    image: "/images/category-ice-cream-cakes.jpg",
+    badges: ["SUMMER SPECIAL"],
+    description: "Baked Cheesecake with Vanilla ice cream & mango topping."
+  },
+  {
     id: "p-tiramisu-cheesecake-sundae",
     name: "Tiramisu Cheesecake Sundae",
     category: "Ice Cream Cakes",
@@ -215,7 +226,7 @@ export const mockProducts: Product[] = [
     originalPrice: 420.00,
     image: "/menu-items/tiramisu-cheesecake-sundae.jpeg",
     badges: ["NEW", "PREMIUM"],
-    description: "Velvety Tiramisu Cheesecake served with Biscoff ice cream topped with butterscotch sauce & biscuit crumble."
+    description: "Velvety Tiramisu Cheesecake served with Biscoff® ice cream topped with butterscotch sauce & biscuit crumble."
   },
   {
     id: "p-blueberry-muffin-sundae",
@@ -248,7 +259,7 @@ export const mockProducts: Product[] = [
     originalPrice: 340.00,
     image: "/menu-items/walnut-brownie-sundae.jpeg",
     badges: ["NEW", "BEST SELLER"],
-    description: "Oh-so-fudgy Walnut Brownie paired with Cookies 'N Cream ice cream topped with hot fudge & cookie crumble."
+    description: "Oh-so-fudgy Walnut Brownie paired with Cookies' N Cream ice cream topped with hot fudge & cookie crumble."
   },
   {
     id: "p-dubai-chocolate-gelato",
@@ -296,7 +307,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "p-fairytale-sundae",
-    name: "Fairytale Sundaes (Kids Special)",
+    name: "Fairytale Sundaes",
     category: "Sundaes",
     volume: "200ml",
     price: 195.00,
@@ -307,25 +318,25 @@ export const mockProducts: Product[] = [
   },
   {
     id: "p-lollipop-sundae",
-    name: "Lollipop Sundaes (Kids Special)",
+    name: "Lollipop Sundaes",
     category: "Sundaes",
     volume: "200ml",
     price: 155.00,
     originalPrice: 190.00,
     image: "/menu-items/lollipop-sundae.jpeg",
     badges: ["KIDS SPECIAL"],
-    description: "More fun, more yum! Comes with your favourite ice cream, lollipop, crunchy wafer roll, and colourful sprinkles."
+    description: "More fun, more yum! This sundae comes with your favourite ice cream, lollipop, crunchy wafer roll, colourful sprinkles and more."
   },
   {
     id: "p-shooting-star-sundae",
-    name: "Shooting Star Sundae (Kids Special)",
+    name: "Shooting Star Sundae",
     category: "Sundaes",
     volume: "200ml",
     price: 195.00,
     originalPrice: 230.00,
     image: "/menu-items/shooting-star-sundae.jpeg",
     badges: ["KIDS SPECIAL"],
-    description: "Special shooting star ice cream scoop with colourful toppings, stars, and sweet fruit syrup."
+    description: "Special shooting star ice cream scoop with colourful sprinkles, magic stars, and sweet berry drizzle."
   },
   {
     id: "p-strawberry-splish-splash",

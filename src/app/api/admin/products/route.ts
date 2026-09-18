@@ -2,12 +2,19 @@ import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import Product from "@/models/Product";
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET() {
   try {
     await connectToDatabase();
     // Fetch all products regardless of stock status
     const products = await Product.find({}).sort({ createdAt: -1 }).lean();
-    return NextResponse.json(products);
+    return NextResponse.json(products, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+      },
+    });
   } catch (error) {
     console.error("Admin Products API GET Error:", error);
     return NextResponse.json(

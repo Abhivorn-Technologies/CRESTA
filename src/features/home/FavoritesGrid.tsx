@@ -11,34 +11,66 @@ import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { mockProducts } from "@/data/products";
 
-export const FavoritesGrid = React.memo(function FavoritesGrid() {
+export const FavoritesGrid = React.memo(function FavoritesGrid({ initialProducts = [] }: { initialProducts?: any[] }) {
   const { toggleWishlist, isInWishlist } = useWishlist();
   const { cart, addToCart, setBuyNowItem, updateQuantity } = useCart();
   const { user } = useAuth();
-  const [products, setProducts] = useState<any[]>(mockProducts.slice(0, 4));
-  const [loading, setLoading] = useState(false);
+  const [products, setProducts] = useState<any[]>(initialProducts && initialProducts.length > 0 ? initialProducts.slice(0, 4) : []);
+
+  const fetchProducts = React.useCallback(async () => {
+    try {
+      const res = await fetch(`/api/products?_cb=${Date.now()}`, { 
+        cache: "no-store",
+        headers: { 'Cache-Control': 'no-cache' }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.products && Array.isArray(data.products) && data.products.length > 0) {
+          setProducts(data.products.slice(0, 4));
+        }
+      }
+    } catch (err) {
+      console.error("Failed to fetch featured products:", err);
+    }
+  }, []);
 
   useEffect(() => {
-    let mounted = true;
-
-    async function fetchProducts() {
-      try {
-        const res = await fetch(`/api/products?_cb=${Date.now()}`, { cache: "no-store" });
-        if (res.ok) {
-          const data = await res.json();
-          if (!mounted) return;
-          if (data.products && Array.isArray(data.products) && data.products.length > 0) {
-            setProducts(data.products.slice(0, 4));
-          }
-        }
-      } catch (err) {
-        console.error("Failed to fetch featured products:", err);
-      } finally {
-        if (mounted) setLoading(false);
-      }
+    if (initialProducts && initialProducts.length > 0) {
+      setProducts(initialProducts.slice(0, 4));
+    } else {
+      fetchProducts();
     }
 
-    fetchProducts();
+    // 1. Cross-tab real-time sync
+    let bc: BroadcastChannel | null = null;
+    try {
+      if (typeof window !== "undefined" && "BroadcastChannel" in window) {
+        bc = new BroadcastChannel("products_sync");
+        bc.onmessage = (event) => {
+          if (event.data?.type === "PRODUCT_UPDATED" && event.data.product) {
+            const updated = event.data.product;
+            setProducts((prev) =>
+              prev.map((p) =>
+                (p.id === updated.id || p._id === updated._id || p._id === updated.id)
+                  ? { ...p, ...updated }
+                  : p
+              )
+            );
+          }
+          fetchProducts();
+        };
+      }
+    } catch (e) {
+      console.error("BroadcastChannel error:", e);
+    }
+
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === "cresta_products_last_update") fetchProducts();
+    };
+    window.addEventListener("storage", handleStorage);
+
+    const handleCustomUpdate = () => fetchProducts();
+    window.addEventListener("cresta_products_update", handleCustomUpdate);
 
     const onFocus = () => fetchProducts();
     window.addEventListener("focus", onFocus);
@@ -46,12 +78,21 @@ export const FavoritesGrid = React.memo(function FavoritesGrid() {
       if (document.visibilityState === 'visible') fetchProducts();
     });
 
+    const interval = setInterval(() => {
+      if (document.visibilityState === "visible") {
+        fetchProducts();
+      }
+    }, 3500);
+
     return () => {
-      mounted = false;
+      if (bc) bc.close();
+      window.removeEventListener("storage", handleStorage);
+      window.removeEventListener("cresta_products_update", handleCustomUpdate);
       window.removeEventListener("focus", onFocus);
       window.removeEventListener("visibilitychange", onFocus);
+      clearInterval(interval);
     };
-  }, []);
+  }, [fetchProducts, initialProducts]);
 
   return (
     <section className="relative w-full py-16 bg-[#fdfdfd]">
@@ -123,6 +164,7 @@ export const FavoritesGrid = React.memo(function FavoritesGrid() {
                     fill
                     className="object-contain"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" 
+                    unoptimized={Boolean(product.image && (product.image.startsWith('data:') || product.image.startsWith('http')))}
                   />
                 ) : (
                   <div className="w-full h-full bg-gray-50 rounded-xl flex items-center justify-center text-gray-300 text-xs font-medium">

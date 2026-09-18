@@ -1,8 +1,8 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { ProductHero } from "@/features/product/ProductHero";
-import dynamic from "next/dynamic";
+import nextDynamic from "next/dynamic";
 
-const RelatedProducts = dynamic(() => import("@/features/product/RelatedProducts").then(m => m.RelatedProducts));
+const RelatedProducts = nextDynamic(() => import("@/features/product/RelatedProducts").then(m => m.RelatedProducts));
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { notFound } from "next/navigation";
@@ -10,50 +10,50 @@ import { connectToDatabase } from "@/lib/mongodb";
 import ProductModel from "@/models/Product";
 import { mockProducts } from "@/data/products";
 
-export async function generateStaticParams() {
-  return mockProducts.map((product) => ({
-    id: product.name.toLowerCase().replace(/\s+/g, "-"),
-  }));
-}
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export default async function ProductDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
   const decodedId = decodeURIComponent(resolvedParams.id);
   const normalizedParam = decodedId.toLowerCase().replace(/[\s-]/g, "");
   
-  // 1. Fast match against static/mock products (Instant 0ms response)
-  let product: any = mockProducts.find(p => 
-    (p.id && p.id.toLowerCase() === normalizedParam) || 
-    (p.name && p.name.toLowerCase().replace(/[\s-]/g, "") === normalizedParam) ||
-    (p.name && p.name.toLowerCase().replace(/\s+/g, "-") === decodedId.toLowerCase())
-  );
-  
-  // 2. Fallback to MongoDB for dynamic custom products
-  if (!product) {
-    try {
-      await connectToDatabase();
-      
-      const productDoc = await ProductModel.findOne({
-        $or: [
-          { slug: decodedId.toLowerCase() },
-          { id: decodedId },
-          { name: new RegExp(`^${decodedId.replace(/-/g, ' ')}$`, 'i') }
-        ]
-      }).lean();
-      
-      if (productDoc) {
-        product = JSON.parse(JSON.stringify(productDoc));
-      } else {
-        const allProducts = await ProductModel.find({}).lean();
-        const found = allProducts.find((p: any) => 
-          (p.id && p.id.toLowerCase() === normalizedParam) || 
-          (p.name && p.name.toLowerCase().replace(/[\s-]/g, "") === normalizedParam)
-        );
-        if (found) product = JSON.parse(JSON.stringify(found));
-      }
-    } catch (err) {
-      console.error("Database lookup error in product details:", err);
+  let product: any = null;
+
+  // 1. Query MongoDB first so live admin edits (images, prices, names) take precedence
+  try {
+    await connectToDatabase();
+    
+    const productDoc = await ProductModel.findOne({
+      $or: [
+        { slug: decodedId.toLowerCase() },
+        { id: decodedId },
+        { name: new RegExp(`^${decodedId.replace(/-/g, ' ')}$`, 'i') }
+      ]
+    }).lean();
+    
+    if (productDoc) {
+      product = JSON.parse(JSON.stringify(productDoc));
+    } else {
+      const allProducts = await ProductModel.find({}).lean();
+      const found = allProducts.find((p: any) => 
+        (p.id && p.id.toLowerCase() === normalizedParam) || 
+        (p.name && p.name.toLowerCase().replace(/[\s-]/g, "") === normalizedParam) ||
+        (p.slug && p.slug.toLowerCase().replace(/[\s-]/g, "") === normalizedParam)
+      );
+      if (found) product = JSON.parse(JSON.stringify(found));
     }
+  } catch (err) {
+    console.error("Database lookup error in product details:", err);
+  }
+
+  // 2. Fallback to mock products only if DB is unreachable or product not in DB
+  if (!product) {
+    product = mockProducts.find(p => 
+      (p.id && p.id.toLowerCase() === normalizedParam) || 
+      (p.name && p.name.toLowerCase().replace(/[\s-]/g, "") === normalizedParam) ||
+      (p.name && p.name.toLowerCase().replace(/\s+/g, "-") === decodedId.toLowerCase())
+    );
   }
 
   if (!product) {

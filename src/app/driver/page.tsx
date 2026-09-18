@@ -49,8 +49,8 @@ export default function DriverDashboard() {
   useEffect(() => {
     const hasOutForDelivery = activeOrders.some(o => o.orderStatus === "out_for_delivery");
     const sendLocationUpdate = () => {
-      const ORIGIN_LAT = 17.4665816; // Cresta Store (Aparna Neo Mall)
-      const ORIGIN_LNG = 78.3099937;
+      const ORIGIN_LAT = 17.4668428; // Cresta Store (Baskin Robbins)
+      const ORIGIN_LNG = 78.3103662;
 
       for (const order of activeOrders.filter(o => o.orderStatus === "out_for_delivery")) {
         const destLat = order.shippingAddress?.lat || 17.4483; // fallback destination

@@ -1,17 +1,51 @@
-"use client";
-
 import { Suspense } from "react";
 import { Navbar } from "@/components/layout/Navbar";
-import dynamic from "next/dynamic";
-
-const ProductsLayout = dynamic(() => import("@/features/products/ProductsLayout").then(m => m.ProductsLayout));
-import { Heart } from "lucide-react";
+import { ProductsLayout } from "@/features/products/ProductsLayout";
+import { WishlistHeaderButton } from "@/features/products/WishlistHeaderButton";
 import Link from "next/link";
+import { connectToDatabase } from "@/lib/mongodb";
+import ProductModel from "@/models/Product";
+import { mockProducts } from "@/data/products";
 
-import { useWishlist } from "@/context/WishlistContext";
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
-export default function ProductsPage() {
-  const { wishlistCount } = useWishlist();
+async function getLiveCatalog() {
+  try {
+    await connectToDatabase();
+    const dbProducts = await ProductModel.find({}).lean();
+    if (dbProducts && dbProducts.length > 0) {
+      const productOrderMap = new Map<string, number>();
+      mockProducts.forEach((p, idx) => {
+        if (p.id) productOrderMap.set(p.id.toLowerCase(), idx);
+        if (p.name) productOrderMap.set(p.name.toLowerCase(), idx);
+        if (p.slug) productOrderMap.set(p.slug.toLowerCase(), idx);
+      });
+
+      const getOrder = (item: any) => {
+        if (item.id && productOrderMap.has(item.id.toLowerCase())) return productOrderMap.get(item.id.toLowerCase())!;
+        if (item.slug && productOrderMap.has(item.slug.toLowerCase())) return productOrderMap.get(item.slug.toLowerCase())!;
+        if (item.name && productOrderMap.has(item.name.toLowerCase())) return productOrderMap.get(item.name.toLowerCase())!;
+        return 999;
+      };
+
+      const sorted = dbProducts.sort((a: any, b: any) => {
+        const orderA = getOrder(a);
+        const orderB = getOrder(b);
+        if (orderA !== orderB) return orderA - orderB;
+        return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+      });
+
+      return JSON.parse(JSON.stringify(sorted));
+    }
+  } catch (err) {
+    console.error("Failed to load products server-side in /products page:", err);
+  }
+  return JSON.parse(JSON.stringify(mockProducts));
+}
+
+export default async function ProductsPage() {
+  const initialProducts = await getLiveCatalog();
 
   return (
     <main className="flex min-h-screen flex-col bg-[#fdfdfd]">
@@ -46,13 +80,7 @@ export default function ProductsPage() {
             >
               All Products
             </Link>
-            <Link 
-              href="/wishlist" 
-              className="flex items-center gap-2 px-6 py-2.5 rounded-full border-0 text-[#101b4d] text-sm font-bold bg-white hover:bg-gray-50 transition-all shadow-lg hover:-translate-y-0.5"
-            >
-              <Heart className={`size-4 ${wishlistCount > 0 ? 'text-[#e6127d] fill-[#e6127d]' : 'text-gray-400'}`} />
-              <span>Wishlist ({wishlistCount})</span>
-            </Link>
+            <WishlistHeaderButton />
           </div>
         </div>
       </div>
@@ -60,7 +88,7 @@ export default function ProductsPage() {
       {/* Main Content Area */}
       <div className="mx-auto max-w-[1440px] w-full px-6 lg:px-10 py-12 flex-1">
         <Suspense fallback={null}>
-          <ProductsLayout />
+          <ProductsLayout initialProducts={initialProducts} />
         </Suspense>
       </div>
     </main>

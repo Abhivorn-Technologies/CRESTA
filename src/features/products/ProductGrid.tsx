@@ -79,11 +79,12 @@ export const ProductGrid = React.memo(function ProductGrid({ products }: Product
               {/* Product Image */}
               <div className="relative w-[80%] h-[80%] transition-transform duration-500 group-hover:scale-110">
               <Image 
-                src={product.image}
+                src={product.image || "/images/placeholder.png"}
                 alt={product.name}
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 className="object-contain"
+                unoptimized={Boolean(product.image && (product.image.startsWith('data:') || product.image.startsWith('http')))}
               />
             </div>
           </div>

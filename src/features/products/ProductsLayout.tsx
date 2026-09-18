@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { ProductSidebar } from "./ProductSidebar";
 import { ProductGrid } from "./ProductGrid";
-import { ProductCategory, Product, mockProducts } from "@/data/products";
+import { ProductCategory, Product } from "@/data/products";
 
-export function ProductsLayout() {
+export function ProductsLayout({ initialProducts = [] }: { initialProducts?: Product[] }) {
   const searchParams = useSearchParams();
   const categoryParam = searchParams.get("category");
 
@@ -15,8 +15,7 @@ export function ProductsLayout() {
   const [selectedCategory, setSelectedCategory] = useState<ProductCategory | "All Categories">(
     (categoryParam as ProductCategory) || "All Categories"
   );
-  const [products, setProducts] = useState<Product[]>(mockProducts);
-  const [isLoading, setIsLoading] = useState(false);
+  const [products, setProducts] = useState<Product[]>(initialProducts);
   const [currentPage, setCurrentPage] = useState(1);
 
   // Sync category when query param changes
@@ -31,35 +30,94 @@ export function ProductsLayout() {
     setCurrentPage(1);
   }, [searchQuery, selectedCategory]);
 
+  // Keep state in sync with server initialProducts if provided
   useEffect(() => {
-    async function fetchProducts() {
-      try {
-        const res = await fetch(`/api/products?_cb=${Date.now()}`, { cache: "no-store" });
-        if (res.ok) {
-          const data = await res.json();
-          if (data.products && Array.isArray(data.products) && data.products.length > 0) {
-            setProducts(data.products);
-          }
-        }
-      } catch (err) {
-        console.error("Failed to fetch products:", err);
-      } finally {
-        setIsLoading(false);
-      }
+    if (initialProducts && initialProducts.length > 0) {
+      setProducts(initialProducts);
     }
-    fetchProducts();
+  }, [initialProducts]);
 
+  const fetchProducts = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/products?_cb=${Date.now()}`, { 
+        cache: "no-store",
+        headers: { 'Cache-Control': 'no-cache' }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.products && Array.isArray(data.products) && data.products.length > 0) {
+          setProducts(data.products);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to fetch products:", err);
+    }
+  }, []);
+
+  useEffect(() => {
+    // If no initial products, fetch immediately
+    if (!initialProducts || initialProducts.length === 0) {
+      fetchProducts();
+    }
+
+    // 1. Cross-tab real-time sync via BroadcastChannel
+    let bc: BroadcastChannel | null = null;
+    try {
+      if (typeof window !== "undefined" && "BroadcastChannel" in window) {
+        bc = new BroadcastChannel("products_sync");
+        bc.onmessage = (event) => {
+          if (event.data?.type === "PRODUCT_UPDATED" && event.data.product) {
+            const updated = event.data.product;
+            setProducts((prev) =>
+              prev.map((p) =>
+                (p.id === updated.id || (p as any)._id === updated._id || (p as any)._id === updated.id)
+                  ? { ...p, ...updated }
+                  : p
+              )
+            );
+          }
+          fetchProducts();
+        };
+      }
+    } catch (e) {
+      console.error("BroadcastChannel error:", e);
+    }
+
+    // 2. Storage event sync
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === "cresta_products_last_update") {
+        fetchProducts();
+      }
+    };
+    window.addEventListener("storage", handleStorage);
+
+    // 3. Custom in-tab event sync
+    const handleCustomUpdate = () => fetchProducts();
+    window.addEventListener("cresta_products_update", handleCustomUpdate);
+
+    // 4. Focus & visibility change sync
     const onFocus = () => fetchProducts();
     window.addEventListener("focus", onFocus);
     window.addEventListener("visibilitychange", () => {
-      if (document.visibilityState === 'visible') fetchProducts();
+      if (document.visibilityState === "visible") fetchProducts();
     });
 
+    // 5. Light poll every 3.5s for instant updates
+    const interval = setInterval(() => {
+      if (document.visibilityState === "visible") {
+        fetchProducts();
+      }
+    }, 3500);
+
     return () => {
+      if (bc) bc.close();
+      window.removeEventListener("storage", handleStorage);
+      window.removeEventListener("cresta_products_update", handleCustomUpdate);
       window.removeEventListener("focus", onFocus);
       window.removeEventListener("visibilitychange", onFocus);
+      clearInterval(interval);
     };
-  }, []);
+  }, [fetchProducts, initialProducts]);
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {

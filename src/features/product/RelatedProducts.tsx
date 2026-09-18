@@ -18,7 +18,7 @@ export const RelatedProducts = React.memo(function RelatedProducts({ currentProd
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const res = await fetch('/api/products');
+        const res = await fetch(`/api/products?_cb=${Date.now()}`, { cache: "no-store" });
         if (res.ok) {
           const data = await res.json();
           if (data.products && Array.isArray(data.products) && data.products.length > 0) {
@@ -62,7 +62,7 @@ export const RelatedProducts = React.memo(function RelatedProducts({ currentProd
         {/* Products Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {relatedItems.map((item, i) => {
-            const slug = item.name.toLowerCase().replace(/[\s-]/g, "");
+            const slug = item.slug || item.name.toLowerCase().replace(/\s+/g, "-");
             const isWished = isInWishlist(item.id);
             return (
             <Link 
@@ -72,7 +72,7 @@ export const RelatedProducts = React.memo(function RelatedProducts({ currentProd
             >
               {/* Badges */}
               <div className="absolute top-5 left-5 z-10 flex flex-col gap-1.5 items-start">
-                {item.badges.length > 0 && (
+                {item.badges && item.badges.length > 0 && (
                   <span className={`text-[8px] font-bold tracking-wider uppercase px-2 py-1 rounded-full shadow-sm ${
                     item.badges[0].includes("OFF") ? "bg-[#fdeef6] text-[#e6127d]" : "bg-[#eef1ff] text-[#101b4d]"
                   }`}>
@@ -98,11 +98,12 @@ export const RelatedProducts = React.memo(function RelatedProducts({ currentProd
               {/* Product Image */}
               <div className="relative w-full h-[180px] mt-8 mb-6 flex items-center justify-center transition-transform duration-500 group-hover:scale-[1.02]">
                 <Image 
-                  src={item.image} 
+                  src={item.image || "/images/placeholder.png"} 
                   alt={item.name} 
                   fill 
                   className="object-contain" 
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" 
+                  unoptimized={Boolean(item.image && (item.image.startsWith('data:') || item.image.startsWith('http')))}
                 />
               </div>
 
